@@ -120,4 +120,14 @@ function NotFoundLayout(props) {
     );
   }
   
-  export { GenericLayout, NotFoundLayout, TableLayout, AddLayout, EditLayout };
+function HomeLayout(props) {
+  return (
+    <Row>
+      <Col>
+        <Navigation />
+      </Col>
+    </Row>
+  );
+}
+
+  export { GenericLayout, NotFoundLayout, TableLayout, AddLayout, EditLayout, HomeLayout };

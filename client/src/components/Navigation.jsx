@@ -8,7 +8,7 @@ const Navigation = () => {
         <Navbar bg="primary" expand="md" variant="dark" className="navbar-padding">
             <Navbar.Brand className="mx-2" href="index.html">
                 <i className="bi bi-collection-play mx-2" />
-                Film Library
+                Homepage
             </Navbar.Brand>
             <Form className="my-2 mx-auto inline" action="#" role="search" aria-label="Quick search">
                 <Form.Control type="search" placeholder="Search" aria-label="Search query" />

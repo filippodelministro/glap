@@ -14,7 +14,7 @@ import { Routes, Route, Outlet, Link, useParams, useNavigate } from 'react-route
 
 //import FILMS from './films';
 
-import { GenericLayout, NotFoundLayout, TableLayout, AddLayout, EditLayout } from './components/Layout';
+import { GenericLayout, NotFoundLayout, TableLayout, AddLayout, EditLayout, HomeLayout } from './components/Layout';
 import API from './API.js';
 
 function App() {
@@ -129,9 +129,13 @@ function App() {
   return (
       <Container fluid>
         <Routes>
-          <Route path="/" element={<GenericLayout filterArray={filterArray} 
-                                    message={message} setMessage={setMessage} />} >
-            <Route index element={<TableLayout 
+            <Route path="/" element={<HomeLayout/>}>
+            <Route path="*" element={<NotFoundLayout />} />
+          
+          {/* <Route path="/" element={<GenericLayout filterArray={filterArray} 
+                                    message={message} setMessage={setMessage} />} > */}
+          
+            {/* <Route index element={<TableLayout 
                  filmList={filmList} setFilmList={setFilmList} filters={filters} 
                  deleteFilm={deleteFilm} editFilm={editFilm} handleErrors={handleErrors}
                  dirty={dirty} setDirty={setDirty} />} />
@@ -142,7 +146,8 @@ function App() {
                  filters={filters} deleteFilm={deleteFilm} editFilm={editFilm}
                  dirty={dirty} setDirty={setDirty} handleErrors={handleErrors}
                  />} />
-            <Route path="*" element={<NotFoundLayout />} />
+ */}
+
           </Route>
         </Routes>
       </Container>
