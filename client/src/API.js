@@ -1,8 +1,11 @@
+import dayjs from 'dayjs';
 
 const SERVER_URL = 'http://localhost:3001/api/';
 
 
-//A utility function for parsing the HTTP response.
+/**
+ * A utility function for parsing the HTTP response.
+ */
 function getJson(httpResponsePromise) {
   // server API always return JSON, in case of error the format is the following { error: <message> } 
   return new Promise((resolve, reject) => {
@@ -30,47 +33,79 @@ function getJson(httpResponsePromise) {
   });
 }
 
-// ================== Authentication functions ==================
-
-const logIn = async (credentials) => {
-  return getJson(fetch(SERVER_URL + 'sessions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    credentials: 'include',  // this parameter specifies that authentication cookie must be forwared
-    body: JSON.stringify(credentials),
+/**
+ * Getting from the server side and returning the list of films.
+ * The list of films could be filtered in the server-side through the optional parameter: filter.
+ */
+const getFilms = async (filter) => {
+  // film.watchDate could be null or a string in the format YYYY-MM-DD
+  return getJson(
+    filter 
+      ? fetch(SERVER_URL + 'films?filter=' + filter)
+      : fetch(SERVER_URL + 'films')
+  ).then( json => {
+    return json.map((film) => {
+      const clientFilm = {
+        id: film.id,
+        title: film.title,
+        favorite: film.favorite,
+        rating: film.rating,
+        user: film.user
+      }
+      if (film.watchDate != null)
+        clientFilm.watchDate = dayjs(film.watchDate);
+      return clientFilm;
+    })
   })
-  )
-};
+}
 
-const getUserInfo = async () => {
-  return getJson(fetch(SERVER_URL + 'sessions/current', {
-    // this parameter specifies that authentication cookie must be forwared
-    credentials: 'include'
-  })
-  )
-};
-
-const logOut = async() => {
-  return getJson(fetch(SERVER_URL + 'sessions/current', {
-    method: 'DELETE',
-    credentials: 'include'  // this parameter specifies that authentication cookie must be forwared
-  })
+/**
+ * This function wants a film object as parameter. If the filmId exists, it updates the film in the server side.
+ */
+function updateFilm(film) {
+  // the date must be transformed into a string for the JSON.stringify method
+  if (film && film.watchDate && (film.watchDate instanceof dayjs))
+      film.watchDate = film.watchDate.format("YYYY-MM-DD");
+  return getJson(
+    fetch(SERVER_URL + "films/" + film.id, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(film)
+    })
   )
 }
 
-const createUser = async (credentials) => {
-  return await getJson(fetch(SERVER_URL + 'create-user', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    credentials: 'include', 
-    body: JSON.stringify({ credentials }),
-  }));
-};
+/**
+ * This function adds a new film in the back-end library.
+ */
+function addFilm(film) {
+  // the date must be transformed into a string for the JSON.stringify method
+  if (film && film.watchDate && (film.watchDate instanceof dayjs))
+    film.watchDate = film.watchDate.format("YYYY-MM-DD");
+  return getJson(
+    fetch(SERVER_URL + "films/", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(film) 
+    })
+  )
+}
+
+/**
+ * This function deletes a film from the back-end library.
+ */
+function deleteFilm(filmId) {
+  return getJson(
+    fetch(SERVER_URL + "films/" + filmId, {
+      method: 'DELETE',
+    })
+  )
+}
 
 
-const API = { logIn, getUserInfo, logOut, createUser };
+const API = { getFilms, updateFilm, addFilm, deleteFilm };
 export default API;

@@ -1,14 +1,4 @@
-# Lab WA
-
-## Registered Users
-
-Here you can find a list of the users already registered inside the provided database.
-
-| emai       |   name | plain-text password |
-|------------|--------|---------------------|
-| u1@p.it    | John   | pwd                 |
-| u2@p.it    | Alic   | pwd                 |
-| u3@p.it    | George | pwd                 |
+# Lab 04 - APIs with Express
 
 ## List of APIs offered by the server
 
@@ -21,8 +11,6 @@ Provide a short description for API with the required parameters, follow the pro
 * [Error responses, if any]
 
 ### Film Management
-
-#### Note: all the following APIs require authentication
 
 #### Get all films
 
@@ -120,7 +108,7 @@ Provide a short description for API with the required parameters, follow the pro
 #### Delete an existing film
 
 * `DELETE /api/films/:id`
-* Description: Delete an existing film 
+* Description: Delete an existing film
 * Request body: _None_
 
 * Response: `200 OK` (success)
@@ -164,63 +152,3 @@ Provide a short description for API with the required parameters, follow the pro
 * Response body: the object as represented in the database after the operation
 
 * Error responses: `503 Service Unavailable` (database error)
-
-
-
-### User management
-
-#### Login
-
-* HTTP method: `POST`  URL: `/api/sessions`
-* Description: authenticate the user who is trying to login
-* Request body: credentials of the user who is trying to login
-
-``` JSON
-{
-    "username": "username",
-    "password": "password"
-}
-```
-
-* Response: `200 OK` (success)
-* Response body: authenticated user
-
-``` JSON
-{
-    "id": 1,
-    "username": "u1@p.it", 
-    "name": "John"
-}
-```
-
-* Error responses:  `500 Internal Server Error` (generic error), `401 Unauthorized User` (login failed)
-
-#### Check if user is logged in
-
-* HTTP method: `GET`  URL: `/api/sessions/current`
-* Description: check if current user is logged in and get her data
-* Request body: _None_
-* Response: `200 OK` (success)
-
-* Response body: authenticated user
-
-``` JSON
-{
-    "id": 1,
-    "username": "u1@p.it", 
-    "name": "John"
-}
-```
-
-* Error responses: `500 Internal Server Error` (generic error), `401 Unauthorized User` (user is not logged in)
-
-#### Logout
-
-* HTTP method: `DELETE`  URL: `/api/sessions/current`
-* Description: logout current user
-* Request body: _None_
-* Response: `200 OK` (success)
-
-* Response body: _None_
-
-* Error responses: `500 Internal Server Error` (generic error), `401 Unauthorized User` (user is not logged in)
