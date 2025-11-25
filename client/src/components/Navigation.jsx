@@ -8,20 +8,35 @@ const Navigation = (props) => {
 
     return (
         <Navbar bg="primary" expand="md" variant="dark" className="navbar-padding">
-            <Navbar.Brand className="mx-2">
-                <i className="bi bi-collection-play mx-2" />
-                Film Library
+            {/* left side */}
+            <Navbar.Brand href='/' className="mx-2">
+                <img
+                    src="/logo_black.png"
+                    alt="logo"
+                    height="100"
+                    className="me-2"
+                />
             </Navbar.Brand>
-            <Form className="my-2 mx-auto inline" action="#" role="search" aria-label="Quick search">
-                <Form.Control type="search" placeholder="Search" aria-label="Search query" />
-            </Form>
-            <Nav>
+
+            {/* central side */}
+            <Nav className="mx-auto gap-4">
+                <Nav.Link href="#" className="text-white">Torneo</Nav.Link>
+                <Nav.Link href="#" className="text-white">Chi siamo</Nav.Link>
+                <Nav.Link href="#" className="text-white">Dove siamo</Nav.Link>
+            </Nav>
+
+            {/* right side */}
+            <Nav className="d-flex align-items-center">
                 <Navbar.Text className="mx-2 fs-5">
-                    {props.user && props.user.name && `Logged in as: ${props.user.name}`}
+                    {props.user && `${props.user.name}`}
                 </Navbar.Text>
-                <Form className="mx-2 mt-1">
-                    {props.loggedIn ? <LogoutButton logout={props.logout} /> : <LoginButton />}
-                </Form>
+                <Nav.Link href="#" className="text-white fs-4 mx-2">
+                    <i className="bi bi-person-circle" />
+                </Nav.Link>
+                <Nav.Link onClick={props.logout} className="text-white fs-4 mx-2" style={{ cursor: "pointer" }}>
+                    <i className="bi bi-box-arrow-right" />
+                </Nav.Link>
+
             </Nav>
         </Navbar>
     );
