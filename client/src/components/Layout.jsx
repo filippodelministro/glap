@@ -128,35 +128,37 @@ function NotFoundLayout(props) {
   
     return (
       <>
-        <Row>
-          <Col>
-            <Navigation loggedIn={props.loggedIn} user={props.user} logout={props.logout} />
-          </Col>
-        </Row>
+        <div className="flex-grow-1">
+          <Row>
+            <Col>
+              <Navigation loggedIn={props.loggedIn} user={props.user} logout={props.logout} />
+            </Col>
+          </Row>
 
-        <Row><Col>
-          {props.message? <Alert className='my-1' onClose={() => props.setMessage('')} variant='danger' dismissible>
-            {props.message}</Alert> : null}
-          {/* Alternative, with autohide
-            <Toast show={props.message !== ''} onClose={() => props.setMessage('')} delay={4000} autohide>
+          <Row><Col>
+            {props.message? <Alert className='my-1' onClose={() => props.setMessage('')} variant='danger' dismissible>
+              {props.message}</Alert> : null}
+            {/* Alternative, with autohide
+              <Toast show={props.message !== ''} onClose={() => props.setMessage('')} delay={4000} autohide>
               <Toast.Body>{props.message}</Toast.Body>
-            </Toast>
-          */}
-        </Col></Row>
+              </Toast>
+              */}
+          </Col></Row>
 
-        <Row>
-          <Col xs={3}>
-            <Filters filterArray={props.filterArray} />
-          </Col>
-  
-          <Col xs={9}>
-            <Outlet />
-  
-          </Col>
-        </Row>
+          <Row>
+            <Col xs={3}>
+              <Filters filterArray={props.filterArray} />
+            </Col>
+    
+            <Col xs={9}>
+              <Outlet />
+    
+            </Col>
+          </Row>
+        </div>
         <Row>
           <Col>
-            <Footer />
+            <Footer className="mt-auto" />
           </Col>
         </Row>
       </>

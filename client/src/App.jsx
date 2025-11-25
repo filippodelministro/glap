@@ -187,7 +187,7 @@ function AppWithRouter(props) {
   }
 
   return (
-      <Container fluid>
+      <Container fluid className="p-0 d-flex flex-column min-vh-100">
         <Routes>
           <Route path="/" element={loggedIn? <GenericLayout filterArray={filterArray} 
                                     message={message} setMessage={setMessage}
