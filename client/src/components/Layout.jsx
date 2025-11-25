@@ -8,6 +8,7 @@ import { FilmTable } from './FilmLibrary';
 import { FilmForm } from './FilmEdit';
 import { useEffect } from 'react';
 import { LoginForm } from './Auth';
+import { Footer } from './Footer.jsx';
 
 import API from '../API.js';
 
@@ -151,6 +152,11 @@ function NotFoundLayout(props) {
           <Col xs={9}>
             <Outlet />
   
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Footer />
           </Col>
         </Row>
       </>
