@@ -25,7 +25,7 @@ const Footer = () => {
         <Nav.Link href="#" className="text-white">Archivio</Nav.Link>
         <Nav.Link href="/mission" className="text-white">Mission</Nav.Link>
         <Nav.Link href="#" className="text-white">Storie</Nav.Link>
-        <Nav.Link href="#" className="text-white">Sponsor</Nav.Link>
+        <Nav.Link href="/sponsor" className="text-white">Sponsor</Nav.Link>
         <Nav.Link href="#" className="text-white">Privacy Policies</Nav.Link>
       </Nav>
 

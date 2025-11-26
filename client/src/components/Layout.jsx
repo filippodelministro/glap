@@ -196,5 +196,29 @@ function MissionLayout(props) {
   );
 }
 
+function SponsorLayout(props) {
+  return (
+<>
+      <div className="flex-grow-1">
+        <Row>
+          <Col>
+            <Navigation loggedIn={props.loggedIn} user={props.user} logout={props.logout} />
+          </Col>
+        </Row>
+      </div>
 
-export { GenericLayout, NotFoundLayout, TableLayout, AddLayout, EditLayout, LoginLayout, MissionLayout };
+    <div>
+      <h2>Sponsor Page - to be implemented</h2>
+    </div>
+
+      <Row>
+        <Col>
+          <Footer className="mt-auto" />
+        </Col>
+      </Row>
+    </>
+  );
+}
+
+
+export { GenericLayout, NotFoundLayout, TableLayout, AddLayout, EditLayout, LoginLayout, MissionLayout, SponsorLayout };
