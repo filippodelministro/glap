@@ -23,7 +23,7 @@ const Footer = () => {
       {/* Secondo livello: navigazione interna */}
       <Nav className="justify-content-center gap-4 mb-3">
         <Nav.Link href="#" className="text-white">Archivio</Nav.Link>
-        <Nav.Link href="#" className="text-white">Mission</Nav.Link>
+        <Nav.Link href="/mission" className="text-white">Mission</Nav.Link>
         <Nav.Link href="#" className="text-white">Storie</Nav.Link>
         <Nav.Link href="#" className="text-white">Sponsor</Nav.Link>
         <Nav.Link href="#" className="text-white">Privacy Policies</Nav.Link>

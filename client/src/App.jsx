@@ -15,7 +15,7 @@ import { BrowserRouter, Routes, Route, Outlet, Link, useParams, Navigate, useNav
 
 //import FILMS from './films';
 
-import { GenericLayout, NotFoundLayout, TableLayout, AddLayout, EditLayout, LoginLayout } from './components/Layout';
+import { GenericLayout, NotFoundLayout, TableLayout, AddLayout, EditLayout, LoginLayout, MissionLayout } from './components/Layout';
 import API from './API.js';
 
 function App() {
@@ -209,6 +209,7 @@ function AppWithRouter(props) {
                  : <Navigate replace to='/' />} />
             <Route path="*" element={<NotFoundLayout />} />
           </Route>
+          <Route path="mission" element={<MissionLayout />} />
           <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
         </Routes>
       </Container>
