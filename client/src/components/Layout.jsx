@@ -3,7 +3,6 @@ import { Row, Col, Button, Alert, Toast } from 'react-bootstrap';
 import { Outlet, Link, useParams, Navigate, useLocation } from 'react-router-dom';
 
 import { Navigation } from './Navigation';
-import { Filters } from './Filters';
 import { FilmTable } from './FilmLibrary';
 import { FilmForm } from './FilmEdit';
 import { useEffect } from 'react';
@@ -146,13 +145,8 @@ function GenericLayout(props) {
         </Col></Row>
 
         <Row>
-          {/* <Col xs={3}>
-            <Filters filterArray={props.filterArray} />
-          </Col> */}
-  
           <Col xs={9}>
             <Outlet />
-  
           </Col>
         </Row>
       </div>
