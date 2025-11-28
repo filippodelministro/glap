@@ -1,11 +1,11 @@
 
-import { Row, Col, Button, Alert, Toast } from 'react-bootstrap';
+import { Row, Col, Button, Alert, Toast, Table } from 'react-bootstrap';
 import { Outlet, Link, useParams, Navigate, useLocation } from 'react-router-dom';
 
 import { Navigation } from './Navigation';
 import { FilmTable } from './FilmLibrary';
 import { FilmForm } from './FilmEdit';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { LoginForm } from './Auth';
 import { Footer } from './Footer.jsx';
 
@@ -297,4 +297,44 @@ function PolicyLayout(props) {
 
 }
 
-export { GenericLayout, NotFoundLayout, TableLayout, AddLayout, EditLayout, LoginLayout, MissionLayout, SponsorLayout, PolicyLayout };
+function TeamsLayout() {
+  const [teams, setTeams] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+  API.getTeams()
+    .then(data => {
+      console.log(data);   
+      setTeams(data);
+    })
+    .catch(err => setError(err.error || 'Errore nel recupero delle squadre'));
+}, []);
+
+  if (error) {
+    return <Alert variant="danger">{error}</Alert>;
+  }
+
+  return (
+    <div className="mt-4">
+      <h1>Squadre</h1>
+      <Table striped bordered hover responsive>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nome squadra</th>
+          </tr>
+        </thead>
+        <tbody>
+          {teams.map(team => (
+            <tr key={team.id}>
+              <td>{team.id}</td>
+              <td>{team.name}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </div>
+  );
+}
+
+export { GenericLayout, NotFoundLayout, TableLayout, AddLayout, EditLayout, LoginLayout, MissionLayout, SponsorLayout, PolicyLayout, TeamsLayout };

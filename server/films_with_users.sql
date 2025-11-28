@@ -17,6 +17,23 @@ CREATE TABLE IF NOT EXISTS "users" (
     "level" TEXT NOT NULL,
 	PRIMARY KEY("id" AUTOINCREMENT)
 );
+
+DROP TABLE IF EXISTS team;
+CREATE TABLE team (
+    id_team INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL
+);
+
+INSERT INTO team (name) VALUES
+('Tattari'),
+('Saetta McTeam'),
+('Blancatorres'),
+('Sconosciuti'),
+('Terroni'),
+('Svincolati'),
+('***'),
+('***');
+
 INSERT INTO "films" ("title","favorite","watchdate","rating","user") VALUES ('Pulp Fiction',1,'2023-03-10',5,1);
 INSERT INTO "films" ("title","favorite","watchdate","rating","user") VALUES ('21 Grams',1,'2023-03-17',4,1);
 INSERT INTO "films" ("title","favorite","watchdate","rating","user") VALUES ('Star Wars',0,NULL,NULL,1);

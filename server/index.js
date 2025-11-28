@@ -96,6 +96,14 @@ const errorFormatter = ({ location, msg, param, value, nestedErrors }) => {
 
 /*** Films APIs ***/
 
+// GET /api/teams
+app.get('/api/teams', isLoggedIn, (req, res) => {
+  filmDao.listTeams()
+    .then((teams) => res.json(teams))
+    .catch((err) => res.status(500).json({ error: 'Errore nel recupero delle squadre' }));
+});
+
+
 // 1. Retrieve the list of all the available films.
 // GET /api/films
 // This route also handles "filter=?" (optional) query parameter, accessed via  req.query.filter

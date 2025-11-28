@@ -59,6 +59,18 @@ const getFilms = async (filter) => {
   })
 }
 
+const getTeams = async () => {
+  return getJson(
+    fetch(SERVER_URL + 'teams', { credentials: 'include' })
+  ).then(json => {
+    // json è già un array di oggetti {id, name}, quindi possiamo restituirlo così com'è
+    return json.map(team => ({
+      id: team.id,
+      name: team.name
+    }));
+  });
+};
+
 /**
  * This function wants a film object as parameter. If the filmId exists, it updates the film in the server side.
  */
@@ -174,6 +186,6 @@ async function getFilmStats(authToken, films) {
 }
 
 
-const API = { getFilms, updateFilm, addFilm, deleteFilm, logIn, getUserInfo, logOut,
-  getAuthToken, getFilmStats };
+const API = { getFilms, updateFilm, addFilm, deleteFilm, getTeams,
+  logIn, getUserInfo, logOut,getAuthToken, getFilmStats };
 export default API;

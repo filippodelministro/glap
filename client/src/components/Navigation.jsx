@@ -27,6 +27,7 @@ const Navigation = (props) => {
                 <Nav.Link as={Link} to="/filter/best" className="text-white">Best Rated</Nav.Link>
                 <Nav.Link as={Link} to="/filter/lastmonth" className="text-white">Seen last month</Nav.Link>
                 <Nav.Link as={Link} to="/filter/unseen" className="text-white">Unseen</Nav.Link>
+                <Nav.Link as={Link} to="/teams" className="text-white">Teams</Nav.Link>
             </Nav>
 
             {/* right side */}

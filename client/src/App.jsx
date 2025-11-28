@@ -15,7 +15,7 @@ import { BrowserRouter, Routes, Route, Outlet, Link, useParams, Navigate, useNav
 
 //import FILMS from './films';
 
-import { GenericLayout, NotFoundLayout, TableLayout, AddLayout, EditLayout, LoginLayout, MissionLayout, SponsorLayout, PolicyLayout } from './components/Layout';
+import { GenericLayout, NotFoundLayout, TableLayout, AddLayout, EditLayout, LoginLayout, MissionLayout, SponsorLayout, PolicyLayout, TeamsLayout } from './components/Layout';
 import API from './API.js';
 
 function App() {
@@ -189,6 +189,7 @@ function AppWithRouter(props) {
   return (
       <Container fluid className="p-0 d-flex flex-column min-vh-100">
         <Routes>
+          <Route path="teams" element={loggedIn ? <TeamsLayout /> : <Navigate replace to='/' />} />
           <Route path="/" element={loggedIn? <GenericLayout filterArray={filterArray} 
                                     message={message} setMessage={setMessage}
                                     loggedIn={loggedIn} user={user} logout={handleLogout} /> : <Navigate replace to='/login' />} >
