@@ -146,9 +146,9 @@ function GenericLayout(props) {
         </Col></Row>
 
         <Row>
-          <Col xs={3}>
+          {/* <Col xs={3}>
             <Filters filterArray={props.filterArray} />
-          </Col>
+          </Col> */}
   
           <Col xs={9}>
             <Outlet />

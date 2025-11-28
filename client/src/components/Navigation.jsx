@@ -1,6 +1,8 @@
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 import { Navbar, Nav, Form } from 'react-bootstrap';
+import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { LoginButton, LogoutButton } from './Auth';
 
@@ -20,9 +22,11 @@ const Navigation = (props) => {
 
             {/* central side */}
             <Nav className="mx-auto gap-4">
-                <Nav.Link href="#" className="text-white">Torneo</Nav.Link>
-                <Nav.Link href="#" className="text-white">Chi siamo</Nav.Link>
-                <Nav.Link href="#" className="text-white">Dove siamo</Nav.Link>
+                <Nav.Link as={Link} to="/" className="text-white">All</Nav.Link>
+                <Nav.Link as={Link} to="/filter/favorite" className="text-white">Favourites</Nav.Link>
+                <Nav.Link as={Link} to="/filter/best" className="text-white">Best Rated</Nav.Link>
+                <Nav.Link as={Link} to="/filter/lastmonth" className="text-white">Seen last month</Nav.Link>
+                <Nav.Link as={Link} to="/filter/unseen" className="text-white">Unseen</Nav.Link>
             </Nav>
 
             {/* right side */}
