@@ -31,7 +31,7 @@ function LoginLayout(props) {
     );
 }
 
-function GenericLayout(props) {
+function HomeLayout(props) {
 
   return (
     <>
@@ -263,4 +263,4 @@ function TeamsLayout(props) {
 
 
 
-export { GenericLayout, NotFoundLayout, LoginLayout, MissionLayout, SponsorLayout, PolicyLayout, TeamsLayout };
+export { HomeLayout, NotFoundLayout, LoginLayout, MissionLayout, SponsorLayout, PolicyLayout, TeamsLayout };
