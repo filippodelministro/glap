@@ -22,7 +22,13 @@ const Navigation = (props) => {
 
             {/* central side */}
             <Nav className="mx-auto gap-4">
-                <Nav.Link as={Link} to="/" className="text-white">All</Nav.Link>
+                <Nav.Link as={Link} to="/" className="text-white">Home</Nav.Link>
+                <Nav.Link as={Link} to="/filter/matches" className="text-white">Partite</Nav.Link>
+                <Nav.Link as={Link} to="/filter/standings" className="text-white">Classifica</Nav.Link>
+                <Nav.Link as={Link} to="/filter/stats" className="text-white">Statistiche</Nav.Link>
+                <Nav.Link as={Link} to="/filter/players" className="text-white">Giocatori</Nav.Link>
+
+                {/* to remove */}
                 <Nav.Link as={Link} to="/filter/favorite" className="text-white">Favourites</Nav.Link>
                 <Nav.Link as={Link} to="/filter/best" className="text-white">Best Rated</Nav.Link>
                 <Nav.Link as={Link} to="/filter/lastmonth" className="text-white">Seen last month</Nav.Link>
