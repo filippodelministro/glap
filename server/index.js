@@ -9,7 +9,7 @@ const jsonwebtoken = require('jsonwebtoken');
 const jwtSecret = 'qTX6walIEr47p7iXtTgLxDTXJRZYDC9egFjGLIn0rRiahB4T24T4d5f59CtyQmH8';
 const expireTime = 60; //seconds
 
-const filmDao = require('./dao-glap'); // module for accessing the films table in the DB
+const glapDao = require('./dao-glap'); // module for accessing the films table in the DB
 const userDao = require('./dao-users'); // module for accessing the user table in the DB
 
 /*** init express and set-up the middlewares ***/
@@ -98,12 +98,17 @@ const errorFormatter = ({ location, msg, param, value, nestedErrors }) => {
 
 // GET /api/teams
 app.get('/api/teams', isLoggedIn, (req, res) => {
-  filmDao.listTeams()
+  glapDao.listTeams()
     .then((teams) => res.json(teams))
     .catch((err) => res.status(500).json({ error: 'Errore nel recupero delle squadre' }));
 });
 
-
+// GET /api/matches
+app.get('/api/matches', isLoggedIn, (req, res) => {
+  glapDao.listMatches()
+    .then((matches) => res.json(matches))
+    .catch((err) => res.status(500).json({ error: 'Errore nel recupero delle partite' }));
+});
 
 /*** Users APIs ***/
 

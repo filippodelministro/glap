@@ -46,6 +46,15 @@ const getTeams = async () => {
   });
 };
 
+const getMatches = async () => {
+  const matches = await getJson(
+    fetch(SERVER_URL + 'matches', { credentials: 'include' })
+  );
+
+  // Nessuna mappatura necessaria, i campi sono già leggibili
+  return matches;
+};
+
 
 /*** Authentication functions ***/
 
@@ -98,6 +107,6 @@ async function getAuthToken() {
 }
 
 
-const API = { getTeams,
+const API = { getTeams, getMatches,
   logIn, getUserInfo, logOut,getAuthToken, };
 export default API;

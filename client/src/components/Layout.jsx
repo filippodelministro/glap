@@ -32,7 +32,57 @@ function LoginLayout(props) {
 }
 
 function HomeLayout(props) {
+  const [matches, setMatches] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    API.getMatches() // Recupera tutte le partite
+      .then(data => {
+        console.log(data);
+        setMatches(data);
+      })
+      .catch(err => setError(err.error || 'Errore nel recupero delle partite'));
+  }, []);
+
+  if (error) {
+    return <Alert variant="danger">{error}</Alert>;
+  }
+
+  return (
+    <div className="d-flex flex-column min-vh-100">
+
+      <Navigation 
+        loggedIn={props.loggedIn} 
+        user={props.user} 
+        logout={props.logout}
+      />
+
+      <div className="container my-5 flex-grow-1">
+
+        <Row className="g-4">
+          <div>
+            <h1>Partite</h1>
+            {matches.length === 0 ? (
+              <p>Nessuna partita disponibile.</p>
+            ) : (
+              matches.map((match, index) => (
+                <div key={match.id} className="mb-3">
+                  <strong>Giornata {match.round}.</strong> &nbsp;&nbsp; 
+                  {match.team_home} {match.goals_home !== null ? match.goals_home : '-'} - {match.goals_away !== null ? match.goals_away : '-'} {match.team_away}<br/>
+                  <small>{match.date} {match.time}</small>
+                </div>
+              ))
+            )}
+          </div>
+        </Row>
+
+      </div>
+
+      <Footer />
+    </div>
+  );
 }
+
 
 function MissionLayout(props) {
   return (

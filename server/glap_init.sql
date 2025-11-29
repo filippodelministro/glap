@@ -33,6 +33,7 @@ CREATE TABLE player (
 DROP TABLE IF EXISTS matches;
 CREATE TABLE matches (
     id_match INTEGER PRIMARY KEY AUTOINCREMENT,
+    round INTEGER NOT NULL,
     date DATE NOT NULL,
     time TIME NOT NULL,
     team_home INTEGER NOT NULL,
@@ -160,71 +161,84 @@ INSERT INTO player (id_team, name, surname, number, role, foot) VALUES
 (10, "Enrico", "Campo", 0, "???", "?"),
 (10, "Fulvio", "Giovanni", 0, "???", "?");
 
-INSERT INTO matches (date, time, team_home, team_away, goals_home, goals_away) VALUES
--- Giornata 1: risultati reali
-("2025-11-23", "18:00", 9, 5, 1, 0),   -- Tattari vs Saetta MC Team
-("2025-11-23", "19:00", 2, 6, 6, 4),   -- Blancatorres vs SC Onosciuti
-("2025-11-23", "20:00", 10, 8, 0, 6),  -- Terroni vs Svincolati
+DROP TABLE IF EXISTS matches;
 
--- Giornata 1: resto partite 0-0
-("2025-11-30", "18:00", 7, 3, 0, 0),   -- Sporting Mistona vs Legna
-("2025-11-30", "19:00", 1, 4, 0, 0),   -- Arancini vs Sailpost
+CREATE TABLE matches (
+    id_match INTEGER PRIMARY KEY AUTOINCREMENT,
+    round INTEGER NOT NULL,
+    date DATE NOT NULL,
+    time TIME NOT NULL,
+    team_home INTEGER NOT NULL,
+    team_away INTEGER NOT NULL,
+    goals_home INTEGER DEFAULT 0,
+    goals_away INTEGER DEFAULT 0,
+    FOREIGN KEY (team_home) REFERENCES team(id_team),
+    FOREIGN KEY (team_away) REFERENCES team(id_team)
+);
 
--- Giornata 2
-("2025-12-07", "18:00", 1, 5, 0, 0),   -- Arancini vs Saetta MC Team
-("2025-12-07", "19:00", 4, 6, 0, 0),   -- Sailpost vs SC Onosciuti
-("2025-12-07", "20:00", 9, 3, 0, 0),   -- Tattari vs Legna
-("2025-12-14", "18:00", 2, 8, 0, 0),   -- Blancatorres vs Svincolati
-("2025-12-14", "19:00", 7, 10, 0, 0),  -- Sporting Mistona vs Terroni
+INSERT INTO matches (round, date, time, team_home, team_away, goals_home, goals_away) VALUES
+-- GIORNATA 1 -------------------------------------------------------------------
+(1, '2025-11-23', '18:00',  9,  4, 1, 0),   -- Tattari vs Saetta MC Team
+(1, '2025-11-23', '19:00',  2,  6, 6, 4),   -- Blancatorres vs Sconosciuti
+(1, '2025-11-23', '20:00', 10,  8, 0, 6),   -- Terroni vs Svincolati
+(1, '2025-11-30', '18:00',  7,  3, 0, 0),   -- Sporting Mistona vs Legna
+(1, '2025-11-30', '19:00',  1,  5, 0, 0),   -- Arancini vs Sailpost
 
--- Giornata 3
-("2025-01-11", "18:00", 5, 3, 0, 0),   -- Saetta MC Team vs Legna
-("2025-01-11", "19:00", 1, 6, 0, 0),   -- Arancini vs SC Onosciuti
-("2025-01-11", "20:00", 4, 8, 0, 0),   -- Sailpost vs Svincolati
-("2025-01-18", "18:00", 9, 10, 0, 0),  -- Tattari vs Terroni
-("2025-01-18", "19:00", 2, 7, 0, 0),   -- Blancatorres vs Sporting Mistona
+-- GIORNATA 2 -------------------------------------------------------------------
+(2, '2025-12-07', '18:00',  1,  4, 0, 0),   -- Arancini vs Saetta MC Team
+(2, '2025-12-07', '19:00',  5,  6, 0, 0),   -- Sailpost vs Sconosciuti
+(2, '2025-12-07', '20:00',  9,  3, 0, 0),   -- Tattari vs Legna
+(2, '2025-12-14', '18:00',  2,  8, 0, 0),   -- Blancatorres vs Svincolati
+(2, '2025-12-14', '19:00',  7, 10, 0, 0),   -- Sporting Mistona vs Terroni
 
--- Giornata 4
-("2025-01-25", "18:00", 1, 3, 0, 0),   -- Arancini vs Legna
-("2025-01-25", "19:00", 6, 8, 0, 0),   -- SC Onosciuti vs Svincolati
-("2025-01-25", "20:00", 5, 10, 0, 0),  -- Saetta MC Team vs Terroni
-("2025-02-01", "18:00", 4, 7, 0, 0),   -- Sailpost vs Sporting Mistona
-("2025-02-01", "19:00", 9, 2, 0, 0),   -- Tattari vs Blancatorres
+-- GIORNATA 3 -------------------------------------------------------------------
+(3, '2025-01-11', '18:00',  4,  3, 0, 0),   -- Saetta MC Team vs Legna
+(3, '2025-01-11', '19:00',  1,  6, 0, 0),   -- Arancini vs Sconosciuti
+(3, '2025-01-11', '20:00',  5,  8, 0, 0),   -- Sailpost vs Svincolati
+(3, '2025-01-18', '18:00',  9, 10, 0, 0),   -- Tattari vs Terroni
+(3, '2025-01-18', '19:00',  2,  7, 0, 0),   -- Blancatorres vs Sporting Mistona
 
--- Giornata 5
-("2025-02-08", "18:00", 6, 7, 0, 0),   -- SC Onosciuti vs Sporting Mistona
-("2025-02-08", "19:00", 1, 8, 0, 0),   -- Arancini vs Svincolati
-("2025-02-08", "20:00", 3, 10, 0, 0),  -- Legna vs Terroni
-("2025-02-22", "18:00", 5, 2, 0, 0),   -- Saetta MC Team vs Blancatorres
-("2025-02-22", "19:00", 4, 9, 0, 0),   -- Sailpost vs Tattari
+-- GIORNATA 4 -------------------------------------------------------------------
+(4, '2025-01-25', '18:00',  1,  3, 0, 0),   -- Arancini vs Legna
+(4, '2025-01-25', '19:00',  6,  8, 0, 0),   -- Sconosciuti vs Svincolati
+(4, '2025-01-25', '20:00',  4, 10, 0, 0),   -- Saetta MC Team vs Terroni
+(4, '2025-02-01', '18:00',  5,  7, 0, 0),   -- Sailpost vs Sporting Mistona
+(4, '2025-02-01', '19:00',  9,  2, 0, 0),   -- Tattari vs Blancatorres
 
--- Giornata 6
-("2025-03-01", "18:00", 8, 7, 0, 0),   -- Svincolati vs Sporting Mistona
-("2025-03-01", "19:00", 3, 2, 0, 0),   -- Legna vs Blancatorres
-("2025-03-01", "20:00", 1, 10, 0, 0),  -- Arancini vs Terroni
-("2025-03-08", "18:00", 6, 9, 0, 0),   -- SC Onosciuti vs Tattari
-("2025-03-08", "19:00", 5, 4, 0, 0),   -- Saetta MC Team vs Sailpost
+-- GIORNATA 5 -------------------------------------------------------------------
+(5, '2025-02-08', '18:00',  6,  7, 0, 0),   -- Sconosciuti vs Sporting Mistona
+(5, '2025-02-08', '19:00',  1,  8, 0, 0),   -- Arancini vs Svincolati
+(5, '2025-02-08', '20:00',  3, 10, 0, 0),   -- Legna vs Terroni
+(5, '2025-02-22', '18:00',  4,  2, 0, 0),   -- Saetta MC Team vs Blancatorres
+(5, '2025-02-22', '19:00',  5,  9, 0, 0),   -- Sailpost vs Tattari
 
--- Giornata 7
-("2025-03-15", "18:00", 10, 2, 0, 0),  -- Terroni vs Blancatorres
-("2025-03-15", "19:00", 8, 9, 0, 0),   -- Svincolati vs Tattari
-("2025-03-15", "20:00", 1, 7, 0, 0),   -- Arancini vs Sporting Mistona
-("2025-03-22", "18:00", 3, 4, 0, 0),   -- Legna vs Sailpost
-("2025-03-22", "19:00", 6, 5, 0, 0),   -- SC Onosciuti vs Saetta MC Team
+-- GIORNATA 6 -------------------------------------------------------------------
+(6, '2025-03-01', '18:00',  8,  7, 0, 0),   -- Svincolati vs Sporting Mistona
+(6, '2025-03-01', '19:00',  3,  2, 0, 0),   -- Legna vs Blancatorres
+(6, '2025-03-01', '20:00',  1, 10, 0, 0),   -- Arancini vs Terroni
+(6, '2025-03-08', '18:00',  6,  9, 0, 0),   -- Sconosciuti vs Tattari
+(6, '2025-03-08', '19:00',  4,  5, 0, 0),   -- Saetta MC Team vs Sailpost
 
--- Giornata 8
-("2025-03-29", "18:00", 1, 2, 0, 0),   -- Arancini vs Blancatorres
-("2025-03-29", "19:00", 7, 9, 0, 0),   -- Sporting Mistona vs Tattari
-("2025-03-29", "20:00", 10, 4, 0, 0),  -- Terroni vs Sailpost
-("2025-04-12", "18:00", 8, 5, 0, 0),   -- Svincolati vs Saetta MC Team
-("2025-04-12", "19:00", 3, 6, 0, 0),   -- Legna vs SC Onosciuti
+-- GIORNATA 7 -------------------------------------------------------------------
+(7, '2025-03-15', '18:00', 10,  2, 0, 0),   -- Terroni vs Blancatorres
+(7, '2025-03-15', '19:00',  8,  9, 0, 0),   -- Svincolati vs Tattari
+(7, '2025-03-15', '20:00',  1,  7, 0, 0),   -- Arancini vs Sporting Mistona
+(7, '2025-03-22', '18:00',  3,  5, 0, 0),   -- Legna vs Sailpost
+(7, '2025-03-22', '19:00',  6,  4, 0, 0),   -- Sconosciuti vs Saetta MC Team
 
--- Giornata 9
-("2025-04-19", "18:00", 7, 5, 0, 0),   -- Sporting Mistona vs Saetta MC Team
-("2025-04-19", "19:00", 2, 4, 0, 0),   -- Blancatorres vs Sailpost
-("2025-04-19", "20:00", 1, 9, 0, 0),   -- Arancini vs Tattari
-("2025-04-26", "18:00", 10, 6, 0, 0),  -- Terroni vs SC Onosciuti
-("2025-04-26", "19:00", 8, 3, 0, 0);   -- Svincolati vs Legna
+-- GIORNATA 8 -------------------------------------------------------------------
+(8, '2025-03-29', '18:00',  1,  2, 0, 0),   -- Arancini vs Blancatorres
+(8, '2025-03-29', '19:00',  7,  9, 0, 0),   -- Sporting Mistona vs Tattari
+(8, '2025-03-29', '20:00', 10,  5, 0, 0),   -- Terroni vs Sailpost
+(8, '2025-04-12', '18:00',  8,  4, 0, 0),   -- Svincolati vs Saetta MC Team
+(8, '2025-04-12', '19:00',  3,  6, 0, 0),   -- Legna vs Sconosciuti
+
+-- GIORNATA 9 -------------------------------------------------------------------
+(9, '2025-04-19', '18:00',  7,  4, 0, 0),   -- Sporting Mistona vs Saetta MC Team
+(9, '2025-04-19', '19:00',  2,  5, 0, 0),   -- Blancatorres vs Sailpost
+(9, '2025-04-19', '20:00',  1,  9, 0, 0),   -- Arancini vs Tattari
+(9, '2025-04-26', '18:00', 10,  6, 0, 0),   -- Terroni vs Sconosciuti
+(9, '2025-04-26', '19:00',  8,  3, 0, 0);   -- Svincolati vs Legna
 
 
 INSERT INTO "users" VALUES (1,'u1@p.it','John','15d3c4fca80fa608dcedeb65ac10eff78d20c88800d016369a3d2963742ea288','72e4eeb14def3b21','premium');
