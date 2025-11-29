@@ -121,8 +121,12 @@ return (
       />
 
       {/* ROUTE PROTETTA */}
-      <Route
+      {/* <Route
         path="teams"
+        element={loggedIn ? <TeamsLayout /> : <Navigate replace to="/login" />}
+      /> */}
+      <Route
+        path="team/Arancini"
         element={loggedIn ? <TeamsLayout /> : <Navigate replace to="/login" />}
       />
 

@@ -1,48 +1,66 @@
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-import { Navbar, Nav, Form } from 'react-bootstrap';
+import { Navbar, Nav, Form, Container } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
 import { LoginButton, LogoutButton } from './Auth';
 
-const Navigation = (props) => {
+const Navigation = () => {
+    const teams = [
+        { id: 1, logo: "/logo/teams/Arancini.png", link: "/team/Arancini" },
+        { id: 2, logo: "/logo/teams/Blancatorres.png", link: "/team/Blancatorres" },
+        { id: 3, logo: "/logo/teams/Legna.png", link: "/team/Legna" },
+        { id: 4, logo: "/logo/teams/Saetta.png", link: "/team/SaettaMcTeam" },
+        { id: 5, logo: "/logo/teams/Sailpost.jpg", link: "/team/Sailpost" },
+        { id: 6, logo: "/logo/teams/Sconosciuti.png", link: "/team/Sconosciuti" },
+        { id: 7, logo: "/logo/teams/SportingMistona.png", link: "/team/SportingMistona" },
+        { id: 8, logo: "/logo/teams/Svincolati.png", link: "/team/Svincolati" },
+        { id: 9, logo: "/logo/teams/Tattari.png", link: "/team/Tattari" },
+        { id: 10, logo: "/logo/teams/Terroni.png", link: "/team/Terroni" }
+    ];
 
     return (
-        <Navbar bg="primary" expand="md" variant="dark" className="navbar-padding">
-            {/* left side */}
-            <Navbar.Brand href='/' className="mx-2">
+        <div style={{ backgroundColor: "#fafafa" }}>
+
+            {/* ------------- 1° MENU ORIZZONTALE: LOGHI SQUADRE ------------- */}
+            <Navbar bg="fafafa" variant="dark" className="py-1">
+                <Container className="justify-content-center gap-3">
+                    {teams.map(t => (
+                        <Link key={t.id} to={t.link}>
+                            <img 
+                                src={t.logo}
+                                alt="team logo"
+                                height="32"
+                                style={{ cursor: "pointer" }}
+                            />
+                        </Link>
+                    ))}
+                </Container>
+            </Navbar>
+
+            {/* ---------------------- LOGO CENTRALE ------------------------ */}
+            <Container className="d-flex justify-content-center py-3">
                 <img
-                    src="/logo_black.png"
-                    alt="logo"
-                    height="100"
-                    className="me-2"
+                    src="/logo/glap/logo_black.png"
+                    alt="GLAP logo"
+                    height="150"
                 />
-            </Navbar.Brand>
+            </Container>
 
-            {/* central side */}
-            <Nav className="mx-auto gap-4">
-                <Nav.Link as={Link} to="/filter/matches" className="text-white">Partite</Nav.Link>
-                <Nav.Link as={Link} to="/filter/standings" className="text-white">Classifica</Nav.Link>
-                <Nav.Link as={Link} to="/filter/stats" className="text-white">Statistiche</Nav.Link>
-                <Nav.Link as={Link} to="/filter/players" className="text-white">Giocatori</Nav.Link>
+            {/* ------------- 2° MENU ORIZZONTALE: STATS TORNEO ------------- */}
+            <Navbar bg="black" variant="dark">
+                <Nav className="mx-auto gap-4 fs-5">
+                    <Nav.Link as={Link} to="/">Calendario e Risultati</Nav.Link>
+                    <Nav.Link as={Link} to="/standings">Classifica</Nav.Link>
+                    <Nav.Link as={Link} to="/awards">Award</Nav.Link>
+                    <Nav.Link as={Link} to="/history">Albo d'oro</Nav.Link>
+                </Nav>
+            </Navbar>
 
-                {/* to remove */}
-                <Nav.Link as={Link} to="/teams" className="text-white">Teams</Nav.Link>
-            </Nav>
-
-            {/* right side */}
-            <Nav className="d-flex align-items-center">
-                <Nav.Link href="#" className="text-white fs-4 mx-2">
-                    {props.user && `${props.user.name}`}
-                </Nav.Link>
-                <Nav.Link onClick={props.logout} className="text-white fs-4 mx-2" style={{ cursor: "pointer" }}>
-                    <i className="bi bi-box-arrow-right" />
-                </Nav.Link>
-
-            </Nav>
-        </Navbar>
+        </div>
     );
 }
+
 
 export { Navigation };
