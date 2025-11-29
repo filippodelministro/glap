@@ -3,8 +3,6 @@ import { Row, Col, Button, Alert, Toast, Table } from 'react-bootstrap';
 import { Outlet, Link, useParams, Navigate, useLocation } from 'react-router-dom';
 
 import { Navigation } from './Navigation';
-import { FilmTable } from './FilmLibrary';
-import { FilmForm } from './FilmEdit';
 import { useState, useEffect } from 'react';
 import { LoginForm } from './Auth';
 import { Footer } from './Footer.jsx';
@@ -31,96 +29,6 @@ function LoginLayout(props) {
         </Col>
       </Row>
     );
-}
-  
-function AddLayout(props) {
-    return (
-      <FilmForm addFilm={props.addFilm} />
-    );
-}
-  
-function EditLayout(props) {
-  const { filmId } = useParams();
-  const filmToEdit = props.films && props.films.find( f => f.id === parseInt(filmId) );
-  
-  return(
-    <>
-    {filmToEdit? 
-      <FilmForm editFilm={props.editFilm} filmToEdit={filmToEdit} />
-      : <Navigate to={"/add"} />}
-    </>
-  );
-}
-
-function TableLayout(props) {
-
-  const { filterId } = useParams();
-  const filterName = props.filters[filterId] ?  props.filters[filterId].label : 'All';
-  const filterQueryId = filterId || '';
-
-  //console.log("DEBUG: re-render TableLayout");
-  //console.log(JSON.stringify(props));
-
-
-  // Without this the if(dirty) test in the [dirty] useEffect is not passed
-  useEffect(() => {
-    props.setDirty(true);
-  }, [filterQueryId]);
-  // Alternatively, the if(dirty) can be omitted but two requests will be sent to the server
-
-  useEffect(() => {
-    if (props.dirty) {  
-      API.getFilms(filterQueryId)
-      .then(films => {
-        props.setFilmList(films);
-        props.setDirty(false);
-      })
-      .catch(e => { props.handleErrors(e); } ); 
-    }
-  }, [props.dirty]);
-  
-
-  useEffect(() => {
-      if (props.filmList) {
-        if (props.authToken) {
-          if (Array.isArray(props.filmList)) {
-            API.getFilmStats(props.authToken, props.filmList.map(e => e.title))
-              .then(stats => props.setFilmStats(stats))
-              .catch(err => {
-                props.setFilmStats({});
-                API.getAuthToken()
-                  .then(resp => props.setAuthToken(resp.token));
-              });
-          }
-        }
-      }
-  }, [props.filmList, props.authToken]);
-
-
-  // When an invalid filter is set, all the films are displayed.
-  //const filteredFilms = (filterId in props.filters) ? props.filmList.filter(props.filters[filterId].filterFunction) : props.filmList;
-  
-  return (
-    <>
-      <div className="d-flex flex-row justify-content-between">
-        <h1 className="my-2">Filter: <span>{filterName}</span></h1>
-        <Link to={'/add'}>
-          <Button variant="primary" className="my-2">&#43;</Button>
-        </Link>
-      </div>
-    <div>
-    <h4>
-      {/* Example about how to make sure the app does not crash in case you have a value which is not a number */}
-      <span>Tot revenues (M$): {props.filmStats.revenues ?
-          (Number.parseFloat(props.filmStats.revenues)).toFixed(2) : '--'}</span>
-      <span className="ms-4">{props.filmStats.audience?
-        (`Audience: ${props.filmStats.audience}`) : null }</span>
-    </h4>
-    </div>
-      <FilmTable 
-        films={props.filmList} delete={props.deleteFilm} editFilm={props.editFilm} />
-    </>
-  );
 }
 
 function GenericLayout(props) {
@@ -353,4 +261,6 @@ function TeamsLayout(props) {
   );
 }
 
-export { GenericLayout, NotFoundLayout, TableLayout, AddLayout, EditLayout, LoginLayout, MissionLayout, SponsorLayout, PolicyLayout, TeamsLayout };
+
+
+export { GenericLayout, NotFoundLayout, LoginLayout, MissionLayout, SponsorLayout, PolicyLayout, TeamsLayout };

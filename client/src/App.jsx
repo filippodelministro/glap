@@ -13,9 +13,7 @@ import { React, useState, useEffect } from 'react';
 import { Container, Row, Col, Button, Toast } from 'react-bootstrap';
 import { BrowserRouter, Routes, Route, Outlet, Link, useParams, Navigate, useNavigate } from 'react-router-dom';
 
-//import FILMS from './films';
-
-import { GenericLayout, NotFoundLayout, TableLayout, AddLayout, EditLayout, LoginLayout, MissionLayout, SponsorLayout, PolicyLayout, TeamsLayout } from './components/Layout';
+import { GenericLayout, NotFoundLayout, LoginLayout, MissionLayout, SponsorLayout, PolicyLayout, TeamsLayout } from './components/Layout';
 import API from './API.js';
 
 function App() {
@@ -36,12 +34,10 @@ function AppWithRouter(props) {
   const [user, setUser] = useState(null);
 
 
-  const [filmList, setFilmList] = useState([]);
   const [message, setMessage] = useState('');
   const [dirty, setDirty] = useState(true);
 
   const [authToken, setAuthToken] = useState(undefined);
-  const [filmStats, setFilmStats] = useState({});
 
   // If an error occurs, the error message will be shown in a toast.
   const handleErrors = (err) => {
@@ -87,38 +83,6 @@ function AppWithRouter(props) {
 
 
   /**
-   * Defining a structure for Filters
-   * Each filter is identified by a unique name and is composed by the following fields:
-   * - A label to be shown in the GUI
-   * - A URL for the router
-   * - A filter function applied before passing the films to the FilmTable component
-   */
-  const filters = {
-    'all': { label: 'All', url: '/', filterFunction: () => true },
-    'favorite': { label: 'Favorites', url: '/filter/favorite', filterFunction: film => film.favorite },
-    'best': { label: 'Best Rated', url: '/filter/best', filterFunction: film => film.rating >= 5 },
-    'lastmonth': { label: 'Seen Last Month', url: '/filter/lastmonth', filterFunction: film => isSeenLastMonth(film) },
-    'unseen': { label: 'Unseen', url: '/filter/unseen', filterFunction: film => film.watchDate ? false : true }
-  };
-
-  const isSeenLastMonth = (film) => {
-    if ('watchDate' in film) {  // Accessing watchDate only if defined
-      const diff = film.watchDate.diff(dayjs(), 'month')
-      const isLastMonth = diff <= 0 && diff > -1;      // last month
-      return isLastMonth;
-    }
-  }
-
-  const filtersToArray = Object.entries(filters);
-  //console.log(JSON.stringify(filtersToArray));
-
-  // NB: to implicitly return an object in an arrow function, use () around the object {}
-  // const filterArray = filtersToArray.map( e => ({filterName: e[0], ...e[1]}) );
-  // alternative with destructuring directly in the parameter of the callback 
-  const filterArray = filtersToArray.map(([filterName, obj ]) =>
-     ({ filterName: filterName, ...obj }));
-
-  /**
    * This function handles the login process.
    * It requires a username and a password inside a "credentials" object.
    */
@@ -147,76 +111,36 @@ function AppWithRouter(props) {
     setFilmStats({});
   };
 
+return (
+  <Container fluid className="p-0 d-flex flex-column min-vh-100">
+    <Routes>
 
+      {/* HOME — route che userai per un layout ad hoc */}
+      <Route path="/" element={<GenericLayout />} />
 
-  function deleteFilm(filmId) {
-    // changes the state by passing a callback that will compute, from the old Array,
-    // a new Array where the filmId is not present anymore
-    //setFilmList(filmList => filmList.filter(e => e.id!==filmId));
-    API.deleteFilm(filmId)
-      .then(()=> setDirty(true))
-      .catch(err=>handleErrors(err));
-  }
+      {/* ROUTE PROTETTA */}
+      <Route
+        path="teams"
+        element={loggedIn ? <TeamsLayout /> : <Navigate replace to="/login" />}
+      />
 
-  function editFilm(film) {
-    /*
-    setFilmList( (films) => films.map( e=> {
-      if (e.id === film.id)
-        return Object.assign({}, film);  // Alternative:  return {...film}
-      else
-        return e;
-    }))
-    */
-    API.updateFilm(film)
-      .then(()=>{setDirty(true); navigate('/');})
-      .catch(err=>handleErrors(err));
-  }
+      {/* ROUTE NON PROTETTE */}
+      <Route path="mission" element={<MissionLayout />} />
+      <Route path="sponsor" element={<SponsorLayout />} />
+      <Route path="policy" element={<PolicyLayout />} />
 
-  function addFilm(film) {
-    /*
-    setFilmList( (films) => {
-      // In the complete application, the newFilmId value should come from the backend server.
-      // NB: This is NOT to be used in a real application: the new id MUST NOT be generated on the client.
-      const newFilmId = Math.max( ...(films.map(e => e.id)))+1;
-      return [...films, {"id": newFilmId, ...film}];
-      });
-    */
-    API.addFilm(film)
-      .then(()=>{setDirty(true); navigate('/');})
-      .catch(err=>handleErrors(err));
-  }
+      {/* LOGIN */}
+      <Route
+        path="/login"
+        element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to="/" />}
+      />
 
-  return (
-      <Container fluid className="p-0 d-flex flex-column min-vh-100">
-        <Routes>
-          <Route path="teams" element={loggedIn ? <TeamsLayout /> : <Navigate replace to='/login' />} />
-          <Route path="/" element={loggedIn? <GenericLayout filterArray={filterArray} 
-                                    message={message} setMessage={setMessage}
-                                    loggedIn={loggedIn} user={user} logout={handleLogout} /> : <Navigate replace to='/login' />} >
-            <Route index element={loggedIn? <TableLayout 
-                 filmList={filmList} setFilmList={setFilmList} filters={filters} 
-                 deleteFilm={deleteFilm} editFilm={editFilm} handleErrors={handleErrors}
-                 dirty={dirty} setDirty={setDirty} 
-                 filmStats={filmStats} setFilmStats={setFilmStats} authToken={authToken} setAuthToken={setAuthToken}
-                 /> : <Navigate replace to='/' />} />
-            <Route path="add" element={loggedIn? <AddLayout addFilm={addFilm} /> : <Navigate replace to='/' />} />
-            <Route path="edit/:filmId" element={loggedIn? <EditLayout films={filmList} editFilm={editFilm} /> : <Navigate replace to='/' />} />
-            <Route path="filter/:filterId" element={loggedIn? <TableLayout 
-                 filmList={filmList} setFilmList={setFilmList}
-                 filters={filters} deleteFilm={deleteFilm} editFilm={editFilm}
-                 dirty={dirty} setDirty={setDirty} handleErrors={handleErrors}
-                 filmStats={filmStats} setFilmStats={setFilmStats} authToken={authToken} setAuthToken={setAuthToken}
-                 />
-                 : <Navigate replace to='/' />} />
-            <Route path="*" element={<NotFoundLayout />} />
-          </Route>
-          <Route path="mission" element={<MissionLayout />} />
-          <Route path="sponsor" element={<SponsorLayout />} />
-          <Route path="policy" element={<PolicyLayout />} />
-          <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
-        </Routes>
-      </Container>
-  );
+      {/* NOT FOUND */}
+      <Route path="*" element={<NotFoundLayout />} />
+
+    </Routes>
+  </Container>
+);
 }
 
 export default App;

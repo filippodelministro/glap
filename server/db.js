@@ -5,7 +5,7 @@
 const sqlite = require('sqlite3');
 
 // open the database
-const db = new sqlite.Database('films_users.db', (err) => {
+const db = new sqlite.Database('glap.db', (err) => {
   if (err) throw err;
 });
 
