@@ -297,7 +297,7 @@ function PolicyLayout(props) {
 
 }
 
-function TeamsLayout() {
+function TeamsLayout(props) {
   const [teams, setTeams] = useState([]);
   const [error, setError] = useState(null);
 
@@ -315,24 +315,40 @@ function TeamsLayout() {
   }
 
   return (
-    <div className="mt-4">
-      <h1>Squadre</h1>
-      <Table striped bordered hover responsive>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nome squadra</th>
-          </tr>
-        </thead>
-        <tbody>
-          {teams.map(team => (
-            <tr key={team.id}>
-              <td>{team.id}</td>
-              <td>{team.name}</td>
+    <div className="d-flex flex-column min-vh-100">
+
+      <Navigation 
+        loggedIn={props.loggedIn} 
+        user={props.user} 
+        logout={props.logout}
+      />
+
+      <div className="container my-5 flex-grow-1">
+
+        <Row className="g-4">
+          <div>
+        <h1>Squadre</h1>
+        <Table striped bordered hover responsive>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome squadra</th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {teams.map(team => (
+              <tr key={team.id}>
+                <td>{team.id}</td>
+                <td>{team.name}</td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+        </div>
+        </Row>
+      </div>
+
+      <Footer />
     </div>
   );
 }

@@ -189,7 +189,7 @@ function AppWithRouter(props) {
   return (
       <Container fluid className="p-0 d-flex flex-column min-vh-100">
         <Routes>
-          <Route path="teams" element={loggedIn ? <TeamsLayout /> : <Navigate replace to='/' />} />
+          <Route path="teams" element={loggedIn ? <TeamsLayout /> : <Navigate replace to='/login' />} />
           <Route path="/" element={loggedIn? <GenericLayout filterArray={filterArray} 
                                     message={message} setMessage={setMessage}
                                     loggedIn={loggedIn} user={user} logout={handleLogout} /> : <Navigate replace to='/login' />} >
