@@ -36,17 +36,20 @@ function HomeLayout(props) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    API.getMatches() // Recupera tutte le partite
-      .then(data => {
-        console.log(data);
-        setMatches(data);
-      })
+    API.getMatches()
+      .then(data => setMatches(data))
       .catch(err => setError(err.error || 'Errore nel recupero delle partite'));
   }, []);
 
   if (error) {
     return <Alert variant="danger">{error}</Alert>;
   }
+
+  const matchesByRound = matches.reduce((acc, m) => {
+    if (!acc[m.round]) acc[m.round] = [];
+    acc[m.round].push(m);
+    return acc;
+  }, {});
 
   return (
     <div className="d-flex flex-column min-vh-100">
@@ -59,22 +62,62 @@ function HomeLayout(props) {
 
       <div className="container my-5 flex-grow-1">
 
-        <Row className="g-4">
-          <div>
-            <h1>Partite</h1>
-            {matches.length === 0 ? (
-              <p>Nessuna partita disponibile.</p>
-            ) : (
-              matches.map((match, index) => (
-                <div key={match.id} className="mb-3">
-                  <strong>Giornata {match.round}.</strong> &nbsp;&nbsp; 
-                  {match.team_home} {match.goals_home !== null ? match.goals_home : '-'} - {match.goals_away !== null ? match.goals_away : '-'} {match.team_away}<br/>
-                  <small>{match.date} {match.time}</small>
+        <h1>Partite</h1>
+
+        {Object.keys(matchesByRound)
+          .sort((a, b) => a - b)
+          .map(round => (
+            <div key={round} className="mt-4">
+
+              {/* TITLE */}
+              <h4 className="mb-3">Giornata {round}</h4>
+
+              {matchesByRound[round].map(match => (
+                <div 
+                  key={match.id} 
+                  className="p-3 mb-3 border rounded d-flex align-items-center justify-content-between"
+                  style={{ width: "100%", backgroundColor: "#fff" }}
+                >
+
+                  {/* LEFT: DATE */}
+                  <div style={{ width: "20%" }}>
+                    <div style={{ fontSize: "0.8rem", fontWeight: 600, color: "#666" }}>
+                      Giornata {round}
+                    </div>
+                    <div style={{ fontSize: "0.85rem", color: "#555" }}>
+                      {match.date} – {match.time}
+                    </div>
+                  </div>
+
+                  {/* CENTRAL: MATCH INFO */}
+                  <div 
+                    className="d-flex align-items-center justify-content-center"
+                    style={{ width: "60%" }}
+                  >
+                    <div className="d-flex justify-content-end" style={{ flex: 1 }}>
+                      <strong>{match.team_home}</strong>
+                    </div>
+
+                    <div style={{ flex: 1, textAlign: "center" }}>
+                      <span 
+                        style={{
+                          backgroundColor: "#00E1FF",
+                          padding: "6px 12px",
+                          borderRadius: "4px",
+                          fontWeight: 700
+                        }}
+                      >
+                        {match.goals_home ?? "-"} - {match.goals_away ?? "-"}
+                      </span>
+                    </div>
+                     <div className="d-flex justify-content-start" style={{ flex: 1 }}>
+                      <strong>{match.team_away}</strong>
+                    </div>
+                  </div>
                 </div>
-              ))
-            )}
-          </div>
-        </Row>
+              ))}
+            </div>
+        ))}
 
       </div>
 
