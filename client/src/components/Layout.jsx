@@ -51,6 +51,19 @@ function HomeLayout(props) {
     return acc;
   }, {});
 
+    const teamLogos = {
+    1: "Arancini.png",
+    2: "Blancatorres.png",
+    3: "Legna.png",
+    4: "Saetta.png",
+    5: "Sailpost.jpg",
+    6: "Sconosciuti.png",
+    7: "SportingMistona.png",
+    8: "Svincolati.png",
+    9: "Tattari.png",
+    10: "Terroni.png"
+  };
+
   return (
     <div className="d-flex flex-column min-vh-100">
 
@@ -94,26 +107,51 @@ function HomeLayout(props) {
                     className="d-flex align-items-center justify-content-center"
                     style={{ width: "60%" }}
                   >
-                    <div className="d-flex justify-content-end" style={{ flex: 1 }}>
+                    <div className="d-flex justify-content-end" style={{ flex: 1, alignItems: "center" }}>
                       <strong>{match.team_home}</strong>
+                      <img 
+                        src={`/logo/teams/${teamLogos[match.team_home_id]}`} 
+                        alt={match.team_home} 
+                        style={{ width: "30px", height: "30px", marginLeft: "8px" }}
+                        onError={(e) => { e.target.src = '/logo/teams/default.png'; }}
+                      />
                     </div>
-
-                    <div style={{ flex: 1, textAlign: "center" }}>
-                      <span 
-                        style={{
-                          backgroundColor: "#00E1FF",
-                          padding: "6px 12px",
-                          borderRadius: "4px",
-                          fontWeight: 700
-                        }}
-                      >
-                        {match.goals_home ?? "-"} - {match.goals_away ?? "-"}
-                      </span>
+                      <div style={{ flex: 1, textAlign: "center" }}>
+                        {new Date(match.date + "T" + match.time) <= new Date() ? (
+                          <span 
+                            style={{
+                              color:"#ffffff",
+                              backgroundColor: "#000000",
+                              padding: "6px 12px",
+                              borderRadius: "2px",
+                              fontWeight: 700
+                            }}
+                          >
+                            {match.goals_home ?? "-"} - {match.goals_away ?? "-"}
+                          </span>
+                        ) : (
+                          <span 
+                            style={{
+                              // backgroundColor: "#ccc",
+                              padding: "6px 12px",
+                              fontWeight: 700
+                            }}
+                          >
+                            vs
+                          </span>
+                        )}
+                      </div>
+                      <div className="d-flex justify-content-start" style={{ flex: 1, alignItems: "center" }}>
+                        <img 
+                          src={`/logo/teams/${teamLogos[match.team_away_id]}`} 
+                          alt={match.team_away} 
+                          style={{ width: "30px", height: "30px", marginRight: "8px" }}
+                          onError={(e) => { e.target.src = '/logo/teams/default.png'; }}
+                        />
+                        <strong>{match.team_away}</strong>
+                      </div>
                     </div>
-                     <div className="d-flex justify-content-start" style={{ flex: 1 }}>
-                      <strong>{match.team_away}</strong>
-                    </div>
-                  </div>
+                  
                 </div>
               ))}
             </div>

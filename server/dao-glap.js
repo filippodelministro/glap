@@ -20,6 +20,8 @@ const convertMatchFromDbRecord = (dbRecord) => {
     match.round = dbRecord.round;
     match.date = dbRecord.date;
     match.time = dbRecord.time;
+    match.team_home_id = dbRecord.team_home_id;
+    match.team_away_id = dbRecord.team_away_id;
     match.team_home = dbRecord.team_home;
     match.team_away = dbRecord.team_away;
     match.goals_home = dbRecord.goals_home;
@@ -52,6 +54,8 @@ exports.listMatches = () => {
                 m.round,
                 m.date,
                 m.time,
+                m.team_home as team_home_id,
+                m.team_away as team_away_id,
                 th.name AS team_home,
                 ta.name AS team_away,
                 m.goals_home,
