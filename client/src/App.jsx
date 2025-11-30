@@ -13,7 +13,7 @@ import { React, useState, useEffect } from 'react';
 import { Container, Row, Col, Button, Toast } from 'react-bootstrap';
 import { BrowserRouter, Routes, Route, Outlet, Link, useParams, Navigate, useNavigate } from 'react-router-dom';
 
-import { HomeLayout, NotFoundLayout, LoginLayout, MissionLayout, SponsorLayout, PolicyLayout, TeamsLayout } from './components/Layout';
+import { HomeLayout, StandingsLayout, NotFoundLayout, LoginLayout, MissionLayout, SponsorLayout, PolicyLayout, TeamsLayout } from './components/Layout';
 import API from './API.js';
 
 function App() {
@@ -116,9 +116,8 @@ return (
     <Routes>
 
       {/* HOME — route che userai per un layout ad hoc */}
-      <Route path="/"
-        element={loggedIn ? <HomeLayout /> : <Navigate replace to="/login" />}
-      />
+      <Route path="/" element={loggedIn ? <HomeLayout /> : <Navigate replace to="/login" />}/>
+      <Route path="/standings" element={loggedIn ? <StandingsLayout /> : <Navigate replace to="/login" />}/>
 
       {/* ROUTE PROTETTA */}
       {/* <Route

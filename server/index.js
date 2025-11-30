@@ -110,6 +110,13 @@ app.get('/api/matches', isLoggedIn, (req, res) => {
     .catch((err) => res.status(500).json({ error: 'Errore nel recupero delle partite' }));
 });
 
+// GET /api/ranking
+app.get('/api/ranking', isLoggedIn, (req, res) => {
+  glapDao.getRanking()
+    .then((ranking) => res.json(ranking))
+    .catch((err) => res.status(500).json({ error: 'Errore nel recupero della classifica' }));
+});
+
 /*** Users APIs ***/
 
 // POST /api/sessions 

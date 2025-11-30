@@ -55,6 +55,14 @@ const getMatches = async () => {
   return matches;
 };
 
+const getRanking = async () => {
+  const ranking = await getJson(
+    fetch(SERVER_URL + 'ranking', { credentials: 'include' })
+  );
+
+  // Nessuna mappatura necessaria se il server restituisce già i campi corretti
+  return ranking;
+};
 
 /*** Authentication functions ***/
 
@@ -107,6 +115,6 @@ async function getAuthToken() {
 }
 
 
-const API = { getTeams, getMatches,
+const API = { getTeams, getMatches, getRanking,
   logIn, getUserInfo, logOut,getAuthToken, };
 export default API;

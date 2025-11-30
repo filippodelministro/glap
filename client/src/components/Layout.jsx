@@ -178,6 +178,90 @@ function HomeLayout(props) {
 }
 
 
+function StandingsLayout(props) {
+  const [ranking, setRanking] = useState([]);
+  const [error, setError] = useState(null);
+
+  const teamLogos = {
+    1: "Arancini.png",
+    2: "Blancatorres.png",
+    3: "Legna.png",
+    4: "Saetta.png",
+    5: "Sailpost.jpg",
+    6: "Sconosciuti.png",
+    7: "SportingMistona.png",
+    8: "Svincolati.png",
+    9: "Tattari.png",
+    10: "Terroni.png"
+  };
+
+  useEffect(() => {
+    API.getRanking()
+      .then(data => setRanking(data))
+      .catch(err => setError(err.error || "Errore nel recupero della classifica"));
+  }, []);
+
+  if (error) {
+    return <Alert variant="danger">{error}</Alert>;
+  }
+
+  return (
+    <div className="d-flex flex-column min-vh-100">
+
+      <Navigation 
+        loggedIn={props.loggedIn} 
+        user={props.user} 
+        logout={props.logout}
+      />
+
+      <div className="container my-5 flex-grow-1">
+        <h1>Classifica</h1>
+
+        <div className="table-responsive">
+          <table className="table table-striped mt-3 align-middle text-center">
+            <thead>
+              <tr>
+                <th>Pos</th>
+                <th>Squadra</th>
+                <th>Pt</th>
+                <th>G</th>
+                <th>V</th>
+                <th>N</th>
+                <th>P</th>
+                <th>GF</th>
+                <th>GS</th>
+                <th>DR</th>
+              </tr>
+            </thead>
+            <tbody>
+              {ranking.map(team => (
+                <tr key={team.team}>
+                  <td>{team.position}</td>
+                  <td className="d-flex align-items-center">
+                    {/* <img s */}
+                    <span>{team.team}</span>
+                  </td>
+                  <td>{team.pt}</td>
+                  <td>{team.played}</td>
+                  <td>{team.wins}</td>
+                  <td>{team.draws}</td>
+                  <td>{team.losses}</td>
+                  <td>{team.gf}</td>
+                  <td>{team.gs}</td>
+                  <td>{team.dr}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <Footer />
+    </div>
+  );
+}
+
 function MissionLayout(props) {
   return (
 <>
@@ -374,4 +458,4 @@ function TeamsLayout(props) {
 
 
 
-export { HomeLayout, NotFoundLayout, LoginLayout, MissionLayout, SponsorLayout, PolicyLayout, TeamsLayout };
+export { HomeLayout, StandingsLayout, NotFoundLayout, LoginLayout, MissionLayout, SponsorLayout, PolicyLayout, TeamsLayout };
