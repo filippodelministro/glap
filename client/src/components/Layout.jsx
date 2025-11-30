@@ -51,7 +51,7 @@ function HomeLayout(props) {
     return acc;
   }, {});
 
-    const teamLogos = {
+  const teamLogos = {
     1: "Arancini.png",
     2: "Blancatorres.png",
     3: "Legna.png",
@@ -103,12 +103,16 @@ function HomeLayout(props) {
                   </div>
 
                   {/* CENTRAL: MATCH INFO */}
-                  <div 
-                    className="d-flex align-items-center justify-content-center"
-                    style={{ width: "60%" }}
-                  >
-                    <div className="d-flex justify-content-end" style={{ flex: 1, alignItems: "center" }}>
-                      <strong>{match.team_home}</strong>
+                  <div className="d-flex align-items-center justify-content-center" style={{ width: "60%" }}>
+
+                    {/* HOME TEAM */}
+                    <div className="d-flex justify-content-end align-items-center" style={{ flex: 1 }}>
+                      <div style={{ textAlign: "right" }}>
+                        <strong>{match.team_home}</strong>
+                        {match.penalties === 1 && match.winner === match.team_home_id && (
+                          <div style={{ fontSize: "0.7rem", color: "#333" }}>Vittoria DCR</div>
+                        )}
+                      </div>
                       <img 
                         src={`/logo/teams/${teamLogos[match.team_home_id]}`} 
                         alt={match.team_home} 
@@ -116,42 +120,51 @@ function HomeLayout(props) {
                         onError={(e) => { e.target.src = '/logo/teams/default.png'; }}
                       />
                     </div>
-                      <div style={{ flex: 1, textAlign: "center" }}>
-                        {new Date(match.date + "T" + match.time) <= new Date() ? (
-                          <span 
-                            style={{
-                              color:"#ffffff",
-                              backgroundColor: "#000000",
-                              padding: "6px 12px",
-                              borderRadius: "2px",
-                              fontWeight: 700
-                            }}
-                          >
-                            {match.goals_home ?? "-"} - {match.goals_away ?? "-"}
-                          </span>
-                        ) : (
-                          <span 
-                            style={{
-                              // backgroundColor: "#ccc",
-                              padding: "6px 12px",
-                              fontWeight: 700
-                            }}
-                          >
-                            vs
-                          </span>
+
+                    {/* CENTER: SCORE OR VS */}
+                    <div style={{ flex: 1, textAlign: "center" }}>
+                      {match.winner !== 0 ? (
+                        <span 
+                          style={{
+                            color: "#ffffff",
+                            backgroundColor: "#000000",
+                            padding: "6px 12px",
+                            borderRadius: "2px",
+                            fontWeight: 700
+                          }}
+                        >
+                          {match.goals_home ?? "-"} - {match.goals_away ?? "-"}
+                        </span>
+                      ) : (
+                        <span 
+                          style={{
+                            padding: "6px 12px",
+                            fontWeight: 700
+                          }}
+                        >
+                          vs
+                        </span>
+                      )}
+                    </div>
+
+                    {/* AWAY TEAM */}
+                    <div className="d-flex justify-content-start align-items-center" style={{ flex: 1 }}>
+                      <img 
+                        src={`/logo/teams/${teamLogos[match.team_away_id]}`} 
+                        alt={match.team_away} 
+                        style={{ width: "30px", height: "30px", marginRight: "8px" }}
+                        onError={(e) => { e.target.src = '/logo/teams/default.png'; }}
+                      />
+                      <div style={{ textAlign: "left" }}>
+                        <strong>{match.team_away}</strong>
+                        {match.penalties === 1 && match.winner === match.team_away_id && (
+                          <div style={{ fontSize: "0.7rem", color: "#333" }}>Vittoria DCR</div>
                         )}
                       </div>
-                      <div className="d-flex justify-content-start" style={{ flex: 1, alignItems: "center" }}>
-                        <img 
-                          src={`/logo/teams/${teamLogos[match.team_away_id]}`} 
-                          alt={match.team_away} 
-                          style={{ width: "30px", height: "30px", marginRight: "8px" }}
-                          onError={(e) => { e.target.src = '/logo/teams/default.png'; }}
-                        />
-                        <strong>{match.team_away}</strong>
-                      </div>
                     </div>
-                  
+
+                  </div>
+
                 </div>
               ))}
             </div>

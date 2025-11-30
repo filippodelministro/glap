@@ -26,6 +26,8 @@ const convertMatchFromDbRecord = (dbRecord) => {
     match.team_away = dbRecord.team_away;
     match.goals_home = dbRecord.goals_home;
     match.goals_away = dbRecord.goals_away;
+    match.winner = dbRecord.winner;
+    match.penalties = dbRecord.penalties;
 
     return match;
 };
@@ -59,7 +61,9 @@ exports.listMatches = () => {
                 th.name AS team_home,
                 ta.name AS team_away,
                 m.goals_home,
-                m.goals_away
+                m.goals_away,
+                m.winner,
+                m.penalties
             FROM matches m
             JOIN team th ON m.team_home = th.id_team
             JOIN team ta ON m.team_away = ta.id_team
