@@ -23,7 +23,7 @@ exports.listTeams = () => {
                 reject(err);
             } else {
                 const teams = rows.map(convertTeamFromDbRecord);
-                console.log(teams);
+                // console.log(teams);
                 resolve(teams);
             }
         });
@@ -75,7 +75,7 @@ exports.listMatches = () => {
                 reject(err);
             } else {
                 const matches = rows.map(convertMatchFromDbRecord); // se vuoi trasformare i campi
-                console.log(matches);
+                // console.log(matches);
                 resolve(matches);
             }
         });
@@ -83,6 +83,7 @@ exports.listMatches = () => {
 };
 const convertRankingFromDbRecord = (dbRecord) => ({
     position: dbRecord.position,
+    team_id: dbRecord.id_team,
     team: dbRecord.team,
     pt: dbRecord.pt,
     played: dbRecord.played,
@@ -103,50 +104,39 @@ exports.getRanking = () => {
                     t.name AS team,
                     SUM(
                         CASE 
-                            WHEN m.goals_home IS NOT NULL AND m.goals_away IS NOT NULL AND 
-                                 ((m.team_home = t.id_team AND m.goals_home > m.goals_away) OR
-                                  (m.team_away = t.id_team AND m.goals_away > m.goals_home))
-                            THEN 3
-                            WHEN m.goals_home IS NOT NULL AND m.goals_away IS NOT NULL AND m.goals_home = m.goals_away
-                            THEN 1
+                            WHEN m.winner != 0 AND m.penalties = 0 AND t.id_team = m.winner THEN 3
+                            WHEN m.winner != 0 AND m.penalties = 1 AND t.id_team = m.winner THEN 2
+                            WHEN m.winner != 0 AND m.penalties = 1 AND t.id_team != m.winner THEN 1
                             ELSE 0
                         END
                     ) AS pt,
-                    COUNT(
-                        CASE WHEN m.goals_home IS NOT NULL AND m.goals_away IS NOT NULL THEN 1 END
-                    ) AS played,
-                    SUM(
-                        CASE 
-                            WHEN m.goals_home IS NOT NULL AND m.goals_away IS NOT NULL AND 
-                                 ((m.team_home = t.id_team AND m.goals_home > m.goals_away) OR
-                                  (m.team_away = t.id_team AND m.goals_away > m.goals_home))
-                            THEN 1 ELSE 0
+                    COUNT(CASE WHEN m.winner != 0 THEN 1 END) AS played,
+                    SUM(CASE 
+                            WHEN m.winner != 0 AND m.penalties = 0 AND t.id_team = m.winner THEN 1
+                            WHEN m.winner != 0 AND m.penalties = 1 AND t.id_team = m.winner THEN 1
+                            ELSE 0
                         END
                     ) AS wins,
-                    SUM(
-                        CASE 
-                            WHEN m.goals_home IS NOT NULL AND m.goals_away IS NOT NULL AND m.goals_home = m.goals_away
-                            THEN 1 ELSE 0
+                    SUM(CASE 
+                            WHEN m.winner != 0 AND m.penalties = 1 AND t.id_team != m.winner THEN 1
+                            ELSE 0
                         END
-                    ) AS draws,
-                    SUM(
-                        CASE 
-                            WHEN m.goals_home IS NOT NULL AND m.goals_away IS NOT NULL AND 
-                                 ((m.team_home = t.id_team AND m.goals_home < m.goals_away) OR
-                                  (m.team_away = t.id_team AND m.goals_away < m.goals_home))
-                            THEN 1 ELSE 0
+                    ) AS draws_or_pen_losses,
+                    SUM(CASE 
+                            WHEN m.winner != 0 AND m.penalties = 0 AND t.id_team != m.winner THEN 1
+                            ELSE 0
                         END
                     ) AS losses,
                     SUM(
                         CASE WHEN m.team_home = t.id_team THEN m.goals_home
-                             WHEN m.team_away = t.id_team THEN m.goals_away
-                             ELSE 0
+                            WHEN m.team_away = t.id_team THEN m.goals_away
+                            ELSE 0
                         END
                     ) AS gf,
                     SUM(
                         CASE WHEN m.team_home = t.id_team THEN m.goals_away
-                             WHEN m.team_away = t.id_team THEN m.goals_home
-                             ELSE 0
+                            WHEN m.team_away = t.id_team THEN m.goals_home
+                            ELSE 0
                         END
                     ) AS gs
                 FROM team t
@@ -155,9 +145,9 @@ exports.getRanking = () => {
             )
             SELECT 
                 ROW_NUMBER() OVER (ORDER BY pt DESC, (gf - gs) DESC) AS position,
-                team, pt, played, wins, draws, losses, gf, gs, (gf - gs) AS dr
+                team, id_team, pt, played, wins, draws_or_pen_losses AS draws, losses, gf, gs, (gf - gs) AS dr
             FROM stats
-            ORDER BY position
+            ORDER BY position;
         `;
 
         db.all(sql, [], (err, rows) => {
@@ -165,6 +155,7 @@ exports.getRanking = () => {
                 reject(err);
             } else {
                 const ranking = rows.map(convertRankingFromDbRecord);
+                console.log(ranking);
                 resolve(ranking);
             }
         });

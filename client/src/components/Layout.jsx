@@ -221,16 +221,7 @@ function StandingsLayout(props) {
           <table className="table table-striped mt-3 align-middle text-center">
             <thead>
               <tr>
-                <th>Pos</th>
-                <th>Squadra</th>
-                <th>Pt</th>
-                <th>G</th>
-                <th>V</th>
-                <th>N</th>
-                <th>P</th>
-                <th>GF</th>
-                <th>GS</th>
-                <th>DR</th>
+                <th>Pos</th><th>Squadra</th><th>Pt</th><th>G</th><th>V</th><th>N</th><th>P</th><th>GF</th><th>GS</th><th>DR</th>
               </tr>
             </thead>
             <tbody>
@@ -238,7 +229,12 @@ function StandingsLayout(props) {
                 <tr key={team.team}>
                   <td>{team.position}</td>
                   <td className="d-flex align-items-center">
-                    {/* <img s */}
+                    <img 
+                        src={`/logo/teams/${teamLogos[team.team_id]}`} 
+                        alt={team.team} 
+                        style={{ width: "30px", height: "30px", marginLeft: "8px" }}
+                        onError={(e) => { e.target.src = '/logo/teams/default.png'; }}
+                      />
                     <span>{team.team}</span>
                   </td>
                   <td>{team.pt}</td>
