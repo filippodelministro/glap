@@ -31,33 +31,37 @@ exports.listTeams = () => {
 };
 
 const convertMatchFromDbRecord = (dbRecord) => {
-    const match = {};
-    match.id = dbRecord.id_match;
-    match.round = dbRecord.round;
-    match.date = dbRecord.date;
-    match.time = dbRecord.time;
-    match.team_home_id = dbRecord.team_home_id;
-    match.team_away_id = dbRecord.team_away_id;
-    match.team_home = dbRecord.team_home;
-    match.team_away = dbRecord.team_away;
-    match.goals_home = dbRecord.goals_home;
-    match.goals_away = dbRecord.goals_away;
-    match.winner = dbRecord.winner;
-    match.penalties = dbRecord.penalties;
-
-    return match;
+    return {
+        id: dbRecord.id_match,
+        league: dbRecord.league,
+        group: dbRecord.group_name,
+        round: dbRecord.round,
+        date: dbRecord.date,
+        time: dbRecord.time,
+        team_home_id: dbRecord.team_home_id,
+        team_away_id: dbRecord.team_away_id,
+        team_home: dbRecord.team_home,
+        team_away: dbRecord.team_away,
+        goals_home: dbRecord.goals_home,
+        goals_away: dbRecord.goals_away,
+        winner: dbRecord.winner,
+        penalties: dbRecord.penalties
+    };
 };
+
+// MATCHES STRUCTURE(league, `group`, round, date, time, team_home, team_away, goals_home, goals_away, winner, penalties)
 exports.listMatches = () => {
     return new Promise((resolve, reject) => {
-        // const sql = 'SELECT * FROM matches';
         const sql = `
             SELECT 
-                m.id_match,
+                m.mid AS id_match,
+                m.league,
+                m.\`group\` AS group_name,
                 m.round,
                 m.date,
                 m.time,
-                m.team_home as team_home_id,
-                m.team_away as team_away_id,
+                m.team_home AS team_home_id,
+                m.team_away AS team_away_id,
                 th.name AS team_home,
                 ta.name AS team_away,
                 m.goals_home,
@@ -65,22 +69,19 @@ exports.listMatches = () => {
                 m.winner,
                 m.penalties
             FROM matches m
-            JOIN team th ON m.team_home = th.id_team
-            JOIN team ta ON m.team_away = ta.id_team
-            ORDER BY m.round, m.date, m.time
+            JOIN team th ON m.team_home = th.tid
+            JOIN team ta ON m.team_away = ta.tid
+            WHERE m.league = 9;
         `;
 
         db.all(sql, [], (err, rows) => {
-            if (err) {
-                reject(err);
-            } else {
-                const matches = rows.map(convertMatchFromDbRecord); // se vuoi trasformare i campi
-                // console.log(matches);
-                resolve(matches);
-            }
+            if (err) return reject(err);
+            resolve(rows.map(convertMatchFromDbRecord));
         });
     });
 };
+
+
 const convertRankingFromDbRecord = (dbRecord) => ({
     position: dbRecord.position,
     team_id: dbRecord.id_team,

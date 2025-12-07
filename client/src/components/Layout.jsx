@@ -40,7 +40,6 @@ function HomeLayout(props) {
       .then(data => setMatches(data))
       .catch(err => setError(err.error || 'Errore nel recupero delle partite'));
   }, []);
-
   if (error) {
     return <Alert variant="danger">{error}</Alert>;
   }
@@ -52,18 +51,19 @@ function HomeLayout(props) {
   }, {});
 
   const teamLogos = {
-    1: "Arancini.png",
-    2: "Blancatorres.png",
-    3: "Legna.png",
-    4: "Saetta.png",
-    5: "Sailpost.jpg",
-    6: "Sconosciuti.png",
-    7: "SportingMistona.png",
-    8: "Svincolati.png",
-    9: "Tattari.png",
-    10: "Terroni.png"
+    83: "Arancini.png",
+    84: "Blancatorres.png",
+    85: "Legna.png",
+    86: "Saetta.png",
+    87: "Sailpost.jpg",
+    88: "Sconosciuti.png",
+    89: "SportingMistona.png",
+    90: "Svincolati.png",
+    91: "Tattari.png",
+    92: "Terroni.png"
   };
 
+  const groupName = matches[0]?.group;
   return (
     <div className="d-flex flex-column min-vh-100">
 
@@ -75,7 +75,8 @@ function HomeLayout(props) {
 
       <div className="container my-5 flex-grow-1">
 
-        <h1>Partite</h1>
+
+        <h1>Partite - Girone {groupName}</h1>
 
         {Object.keys(matchesByRound)
           .sort((a, b) => a - b)
@@ -115,10 +116,11 @@ function HomeLayout(props) {
                       </div>
                       <img 
                         src={`/logo/teams/${teamLogos[match.team_home_id]}`} 
-                        alt={match.team_home} 
+                        // alt={match.team_home} 
                         style={{ width: "30px", height: "30px", marginLeft: "8px" }}
                         onError={(e) => { e.target.src = '/logo/teams/default.png'; }}
                       />
+
                     </div>
 
                     {/* CENTER: SCORE OR VS */}
@@ -151,7 +153,7 @@ function HomeLayout(props) {
                     <div className="d-flex justify-content-start align-items-center" style={{ flex: 1 }}>
                       <img 
                         src={`/logo/teams/${teamLogos[match.team_away_id]}`} 
-                        alt={match.team_away} 
+                        // alt={match.team_away} 
                         style={{ width: "30px", height: "30px", marginRight: "8px" }}
                         onError={(e) => { e.target.src = '/logo/teams/default.png'; }}
                       />

@@ -870,11 +870,11 @@ INSERT INTO matches (league, `group`, round, date, time, team_home, team_away, g
 
 -- ############## 09: 2025/2026
 -- GIORNATA 1 -------------------------------------------------------------------
-(9, 'Unico', 1, '2025-11-23', '18:00', 89, 84, 1, 0, 9, 0),   	-- Tattari vs Saetta MC Team
-(9, 'Unico', 1, '2025-11-23', '19:00', 82, 86, 6, 4, 2, 0),   	-- Blancatorres vs Sconosciuti
-(9, 'Unico', 1, '2025-11-23', '20:00', 10, 8, 0, 6, 8, 0),   	-- Terroni vs Svincolati
-(9, 'Unico', 1, '2025-11-30', '18:00', 87, 83, 0, 0, 0, null),   -- Sporting Mistona vs Legna
-(9, 'Unico', 1, '2025-11-30', '19:00', 81, 85, 0, 0, 0, null);   -- Arancini vs Sailpost
+(9, 'Unico', 1, '2025-11-23', '18:00', 91, 86, 1, 0, 9, 0),   	-- Tattari vs Saetta MC Team
+(9, 'Unico', 1, '2025-11-23', '19:00', 84, 88, 6, 4, 2, 0),   	-- Blancatorres vs Sconosciuti
+(9, 'Unico', 1, '2025-11-23', '20:00', 92, 90, 0, 6, 8, 0),   	-- Terroni vs Svincolati
+(9, 'Unico', 1, '2025-11-30', '18:00', 89, 85, 0, 4, 85, 0),   -- Sporting Mistona vs Legna
+(9, 'Unico', 1, '2025-11-30', '19:00', 83, 87, 7, 1, 83, 0);   -- Arancini vs Sailpost
 
 
 INSERT INTO performance (mid, pid, goal, grade) VALUES
