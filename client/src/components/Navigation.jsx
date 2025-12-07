@@ -42,11 +42,9 @@ const Navigation = () => {
 
             {/* ---------------------- LOGO CENTRALE ------------------------ */}
             <Container className="d-flex justify-content-center py-3">
-                <img
-                    src="/logo/glap/logo_black.png"
-                    alt="GLAP logo"
-                    height="150"
-                />
+                <Nav.Link as={Link} to="/">
+                    <img src="/logo/glap/logo_black.png" alt="GLAP logo" height="150" style={{ cursor: 'pointer' }}/>
+                </Nav.Link>
             </Container>
 
             {/* ------------- 2° MENU ORIZZONTALE: STATS TORNEO ------------- */}
