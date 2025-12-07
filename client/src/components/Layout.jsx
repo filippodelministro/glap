@@ -50,20 +50,9 @@ function HomeLayout(props) {
     return acc;
   }, {});
 
-  const teamLogos = {
-    83: "Arancini.png",
-    84: "Blancatorres.png",
-    85: "Legna.png",
-    86: "Saetta.png",
-    87: "Sailpost.jpg",
-    88: "Sconosciuti.png",
-    89: "SportingMistona.png",
-    90: "Svincolati.png",
-    91: "Tattari.png",
-    92: "Terroni.png"
-  };
-
   const groupName = matches[0]?.group;
+  const leagueID = matches[0]?.league;
+
   return (
     <div className="d-flex flex-column min-vh-100">
 
@@ -76,7 +65,7 @@ function HomeLayout(props) {
       <div className="container my-5 flex-grow-1">
 
 
-        <h1>Partite - Girone {groupName}</h1>
+        <h1>Partite - Girone {groupName}; league: {leagueID}</h1>
 
         {Object.keys(matchesByRound)
           .sort((a, b) => a - b)
@@ -115,7 +104,7 @@ function HomeLayout(props) {
                         )}
                       </div>
                       <img 
-                        src={`/logo/teams/${teamLogos[match.team_home_id]}`} 
+                        src={`/logo/teams/${leagueID}/${match.team_home}.png`} 
                         // alt={match.team_home} 
                         style={{ width: "30px", height: "30px", marginLeft: "8px" }}
                         onError={(e) => { e.target.src = '/logo/teams/default.png'; }}
@@ -152,7 +141,7 @@ function HomeLayout(props) {
                     {/* AWAY TEAM */}
                     <div className="d-flex justify-content-start align-items-center" style={{ flex: 1 }}>
                       <img 
-                        src={`/logo/teams/${teamLogos[match.team_away_id]}`} 
+                        src={`/logo/teams/${leagueID}/${match.team_away}.png`} 
                         // alt={match.team_away} 
                         style={{ width: "30px", height: "30px", marginRight: "8px" }}
                         onError={(e) => { e.target.src = '/logo/teams/default.png'; }}
