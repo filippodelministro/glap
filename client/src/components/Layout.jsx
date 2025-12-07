@@ -36,7 +36,7 @@ function HomeLayout(props) {
   const [error, setError] = useState(null);
   const [selectedLeague, setSelectedLeague] = useState(null);
 
-  // League ID -> Display name
+  //todo: use data from DB instead manual mapping
   const leagueNames = {
     1: "16/17",
     2: "17/18",
