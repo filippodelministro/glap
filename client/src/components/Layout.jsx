@@ -34,59 +34,62 @@ function LoginLayout(props) {
 function HomeLayout(props) {
   const [matches, setMatches] = useState([]);
   const [error, setError] = useState(null);
-  // const [selectedLeague, setSelectedLeague] = useState(null);
-  const lastLeague = matches.length ? Math.max(...matches.map(m => m.league)) : null;
-  const [selectedLeague, setSelectedLeague] = useState(lastLeague);
-  const availableLeagues = [...new Set(matches.map(m => m.league))].sort((a,b)=>a-b);
+  const [selectedLeague, setSelectedLeague] = useState(null);
 
+  // League ID -> Display name
+  const leagueNames = {
+    1: "16/17",
+    2: "17/18",
+    3: "18/19",
+    4: "19/20 A",
+    5: "19/20 B",
+    6: "21/22 A",
+    7: "21/22 B",
+    8: "2025",
+    9: "25/26"
+  };
+
+  // Fetch matches on mount
   useEffect(() => {
     API.getMatches()
       .then(data => setMatches(data))
-      .catch(err => setError(err.error || 'Errore nel recupero delle partite'));
+      .catch(err => setError(err.error || "Errore nel recupero delle partite"));
   }, []);
+
+  // Once matches load, set the default selected league to the newest one
+  useEffect(() => {
+    if (matches.length > 0) {
+      const sortedLeagues = [...new Set(matches.map(m => m.league))].sort((a, b) => b - a);
+      setSelectedLeague(sortedLeagues[0]);
+    }
+  }, [matches]);
+
   if (error) {
     return <Alert variant="danger">{error}</Alert>;
   }
 
-  const groupName = matches[0]?.group;
-  const leagueID = matches[0]?.league;
+  // Available leagues in descending order (newest first)
+  const availableLeagues = [...new Set(matches.map(m => m.league))].sort((a, b) => b - a);
 
-// Mappa LID -> Nome
-const leagueNames = {
-  1: "16/17",
-  2: "17/18",
-  3: "18/19",
-  4: "19/20 A",
-  5: "19/20 B",
-  6: "21/22 A",
-  7: "21/22 B",
-  8: "2025",
-  9: "25/26"
-};
+  // Filter matches by the selected league
+  const filteredMatches = selectedLeague
+    ? matches.filter(m => m.league === Number(selectedLeague))
+    : [];
 
-const filteredMatches = selectedLeague
-  ? matches.filter(m => m.league === Number(selectedLeague))
-  : matches;
+  // Group matches: group -> round -> matches
+  const matchesByGroup = filteredMatches.reduce((acc, match) => {
+    const group = match.group;
+    const round = match.round;
 
-const matchesByRound = filteredMatches.reduce((acc, m) => {
-  if (!acc[m.round]) acc[m.round] = [];
-  acc[m.round].push(m);
-  return acc;
-}, {});
+    if (!acc[group]) acc[group] = {};
+    if (!acc[group][round]) acc[group][round] = [];
 
-const matchesByGroup = filteredMatches.reduce((acc, match) => {
-  const group = match.group;
-  const round = match.round;
+    acc[group][round].push(match);
+    return acc;
+  }, {});
 
-  if (!acc[group]) acc[group] = {};
-  if (!acc[group][round]) acc[group][round] = [];
-
-  acc[group][round].push(match);
-  return acc;
-}, {});
-
-const filteredGroupName = filteredMatches[0]?.group;
-const filteredLeagueID = filteredMatches[0]?.league;
+  // Optional: filtered league ID for displaying logos etc.
+  const filteredLeagueID = filteredMatches[0]?.league;
 
 return (
   <div className="d-flex flex-column min-vh-100">
@@ -98,14 +101,22 @@ return (
     />
 
     <div className="container my-5 flex-grow-1">
+      <div className="d-flex align-items-center justify-content-between mb-4">
+        <h1 className="m-0">Partite</h1>
 
-      <h1>Partite</h1>
-
-      <div className="mb-4">
-        <label className="me-2"><strong>Filtra per lega:</strong></label>
         <select
           value={selectedLeague ?? ""}
           onChange={(e) => setSelectedLeague(Number(e.target.value))}
+          style={{
+            color: "#ffffff",
+            backgroundColor: "#000000",
+            padding: "6px 12px",
+            borderRadius: "2px",
+            fontWeight: 700,
+            border: "none",
+            outline: "none",
+            cursor: "pointer"
+          }}
         >
           {availableLeagues.map(id => (
             <option key={id} value={id}>
