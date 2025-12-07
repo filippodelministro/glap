@@ -393,51 +393,76 @@ function MissionLayout(props) {
   );
 }
 
-function SponsorLayout(props) {
-  // Inserisci qui i link delle immagini sponsor
-  const sponsors = [
-    "/sponsor_logo/ANundini.png",
-    "/sponsor_logo/BarAlino.png",
-    "/sponsor_logo/LaFenice.png",
-    "/sponsor_logo/MedicinaAMisuraDUomo.png",
-    "/sponsor_logo/Melabevo.png",
-    "/sponsor_logo/OfficinaCei.png",
-    "/sponsor_logo/TuttoLegno.png",
-    "/sponsor_logo/Pizzeria Molina.svg",
-    "/sponsor_logo/logo_black.png"
-  ];
 
+function ContactsLayout(props) {
   return (
-    <div className="d-flex flex-column min-vh-100">
-
-      <Navigation 
-        loggedIn={props.loggedIn} 
-        user={props.user} 
-        logout={props.logout}
-      />
-
-      <div className="container my-5 flex-grow-1">
-
-        <Row className="g-4">
-          {sponsors.map((src, index) => (
-            <Col key={index} xs={12} sm={6} md={4}>
-              <div className=" p-3 d-flex align-items-center justify-content-center">
-                <img 
-                  src={src} 
-                  alt={`Sponsor ${index + 1}`} 
-                  className="img-fluid" 
-                  style={{ maxHeight: "250px", objectFit: "contain" }}
-                />
-              </div>
-            </Col>
-          ))}
+<>
+      <div className="flex-grow-1">
+        <Row>
+          <Col>
+            <Navigation loggedIn={props.loggedIn} user={props.user} logout={props.logout} />
+          </Col>
         </Row>
+        
+        <div className="container my-2 flex-grow-5 d-flex justify-content-center">
+          <h1>CONTATTI</h1>
       </div>
-
-      <Footer />
-    </div>
+      </div>
+      <Row>
+        <Col>
+          <Footer className="mt-auto" />
+        </Col>
+      </Row>
+    </>
   );
 }
+
+function HistoryLayout(props) {
+  return (
+<>
+      <div className="flex-grow-1">
+        <Row>
+          <Col>
+            <Navigation loggedIn={props.loggedIn} user={props.user} logout={props.logout} />
+          </Col>
+        </Row>
+        
+        <div className="container my-2 flex-grow-5 d-flex justify-content-center">
+          <h1>HISTORY</h1>
+      </div>
+      </div>
+      <Row>
+        <Col>
+          <Footer className="mt-auto" />
+        </Col>
+      </Row>
+    </>
+  );
+}
+
+function ArchiveLayout(props) {
+  return (
+<>
+      <div className="flex-grow-1">
+        <Row>
+          <Col>
+            <Navigation loggedIn={props.loggedIn} user={props.user} logout={props.logout} />
+          </Col>
+        </Row>
+        
+        <div className="container my-2 flex-grow-5 d-flex justify-content-center">
+          <h1>ARCHIVIO???</h1>
+      </div>
+      </div>
+      <Row>
+        <Col>
+          <Footer className="mt-auto" />
+        </Col>
+      </Row>
+    </>
+  );
+}
+
 
 function PolicyLayout(props) {
   return (
@@ -558,4 +583,4 @@ function TeamsLayout(props) {
 
 
 
-export { HomeLayout, StandingsLayout, NotFoundLayout, LoginLayout, MissionLayout, SponsorLayout, PolicyLayout, TeamsLayout };
+export { HomeLayout, StandingsLayout, NotFoundLayout, LoginLayout, HistoryLayout, ArchiveLayout, MissionLayout, ContactsLayout, PolicyLayout, TeamsLayout };

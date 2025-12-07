@@ -13,7 +13,7 @@ import { React, useState, useEffect } from 'react';
 import { Container, Row, Col, Button, Toast } from 'react-bootstrap';
 import { BrowserRouter, Routes, Route, Outlet, Link, useParams, Navigate, useNavigate } from 'react-router-dom';
 
-import { HomeLayout, StandingsLayout, NotFoundLayout, LoginLayout, MissionLayout, SponsorLayout, PolicyLayout, TeamsLayout } from './components/Layout';
+import { HomeLayout, StandingsLayout, NotFoundLayout, LoginLayout, MissionLayout, HistoryLayout, ArchiveLayout, ContactsLayout, PolicyLayout, TeamsLayout } from './components/Layout';
 import API from './API.js';
 
 function App() {
@@ -131,8 +131,11 @@ return (
 
       {/* ROUTE NON PROTETTE */}
       <Route path="mission" element={<MissionLayout />} />
-      <Route path="sponsor" element={<SponsorLayout />} />
+      {/* <Route path="sponsor" element={<SponsorLayout />} /> */}
       <Route path="policy" element={<PolicyLayout />} />
+      <Route path="contacts" element={<ContactsLayout />} />
+      <Route path="history" element={<HistoryLayout />} />
+      <Route path="archive" element={<ArchiveLayout />} />
 
       {/* LOGIN */}
       <Route

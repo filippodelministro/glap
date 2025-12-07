@@ -1,0 +1,26 @@
+.footer-link {
+  color: #888888; 
+  text-decoration: none;
+  transition: color none;
+}
+
+.footer-link:hover {
+  color: #ffffff;
+}
+
+.footer-link:visited {
+  color: #888888; 
+}
+
+.footer-bar {
+  font-size: 0.75rem; /* smaller font, adjust as needed */
+}
+
+.footer-separator {
+  height: 1px;            /* thin line */
+  background-color: #888;  /* gray color */
+  width: 95%;              /* or any width you like */
+  margin: 0 auto;          /* centers the line */
+  opacity: 0.5;            /* slightly lighter */
+  border-radius: 1px;      /* optional: smooth edges */
+}
