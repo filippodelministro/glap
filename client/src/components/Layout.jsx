@@ -34,6 +34,8 @@ function LoginLayout(props) {
 function HomeLayout(props) {
   const [matches, setMatches] = useState([]);
   const [error, setError] = useState(null);
+  const [selectedLeague, setSelectedLeague] = useState(null);
+  const availableLeagues = [...new Set(matches.map(m => m.league))];
 
   useEffect(() => {
     API.getMatches()
@@ -44,14 +46,34 @@ function HomeLayout(props) {
     return <Alert variant="danger">{error}</Alert>;
   }
 
-  const matchesByRound = matches.reduce((acc, m) => {
-    if (!acc[m.round]) acc[m.round] = [];
-    acc[m.round].push(m);
-    return acc;
-  }, {});
-
   const groupName = matches[0]?.group;
   const leagueID = matches[0]?.league;
+
+// Mappa LID -> Nome
+const leagueNames = {
+  1: "16/17",
+  2: "17/18",
+  3: "18/19",
+  4: "19/20 A",
+  5: "19/20 B",
+  6: "21/22 A",
+  7: "21/22 B",
+  8: "2025",
+  9: "25/26"
+};
+
+const filteredMatches = selectedLeague
+  ? matches.filter(m => m.league === Number(selectedLeague))
+  : matches;
+
+const matchesByRound = filteredMatches.reduce((acc, m) => {
+  if (!acc[m.round]) acc[m.round] = [];
+  acc[m.round].push(m);
+  return acc;
+}, {});
+
+const filteredGroupName = filteredMatches[0]?.group;
+const filteredLeagueID = filteredMatches[0]?.league;
 
   return (
     <div className="d-flex flex-column min-vh-100">
@@ -65,7 +87,23 @@ function HomeLayout(props) {
       <div className="container my-5 flex-grow-1">
 
 
-        <h1>Partite - Girone {groupName}; league: {leagueID}</h1>
+        <h1>Partite - Girone {filteredGroupName}; league: {filteredLeagueID}</h1>
+
+        <div className="mb-4">
+  <label className="me-2"><strong>Filtra per lega:</strong></label>
+  <select
+    value={selectedLeague ?? ""}
+    onChange={(e) => setSelectedLeague(e.target.value || null)}
+  >
+    <option value="">Tutte le leghe</option>
+
+    {Object.keys(leagueNames).map(id => (
+      <option key={id} value={id}>
+        {leagueNames[id]}
+      </option>
+    ))}
+  </select>
+</div>
 
         {Object.keys(matchesByRound)
           .sort((a, b) => a - b)

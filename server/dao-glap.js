@@ -70,8 +70,8 @@ exports.listMatches = () => {
                 m.penalties
             FROM matches m
             JOIN team th ON m.team_home = th.tid
-            JOIN team ta ON m.team_away = ta.tid
-            WHERE m.league = 9;
+            JOIN team ta ON m.team_away = ta.tid;
+            -- WHERE m.league = 9;
         `;
 
         db.all(sql, [], (err, rows) => {
