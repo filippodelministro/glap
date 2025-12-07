@@ -232,86 +232,135 @@ return (
 );
 }
 
-
 function StandingsLayout(props) {
   const [ranking, setRanking] = useState([]);
   const [error, setError] = useState(null);
+  const [selectedLeague, setSelectedLeague] = useState(null);
 
-  const teamLogos = {
-    1: "Arancini.png",
-    2: "Blancatorres.png",
-    3: "Legna.png",
-    4: "Saetta.png",
-    5: "Sailpost.jpg",
-    6: "Sconosciuti.png",
-    7: "SportingMistona.png",
-    8: "Svincolati.png",
-    9: "Tattari.png",
-    10: "Terroni.png"
+   //todo: use data from DB instead manual mapping
+  const leagueNames = {
+    1: "16/17",
+    2: "17/18",
+    3: "18/19",
+    4: "19/20 A",
+    5: "19/20 B",
+    6: "21/22 A",
+    7: "21/22 B",
+    8: "2025",
+    9: "25/26"
   };
 
+  // Fetch rankings on mount
   useEffect(() => {
     API.getRanking()
-      .then(data => setRanking(data))
+      .then(data => {
+        setRanking(data);
+        if (data.length > 0) {
+          // Default to newest league
+          const sortedLeagues = [...new Set(data.map(d => d.league))].sort((a, b) => b - a);
+          setSelectedLeague(sortedLeagues[0]);
+        }
+      })
       .catch(err => setError(err.error || "Errore nel recupero della classifica"));
   }, []);
 
-  if (error) {
-    return <Alert variant="danger">{error}</Alert>;
-  }
+  if (error) return <Alert variant="danger">{error}</Alert>;
+
+  // Available leagues for dropdown
+  const availableLeagues = [...new Set(ranking.map(d => d.league))].sort((a, b) => b - a);
+
+  // Filter ranking by selected league
+  const filteredRanking = selectedLeague
+    ? ranking.filter(r => r.league === Number(selectedLeague))
+    : [];
+
+  // Group teams by "group" within the league
+  const rankingByGroup = filteredRanking.reduce((acc, team) => {
+    const group = team.group || "Ungrouped";
+    if (!acc[group]) acc[group] = [];
+    acc[group].push(team);
+    return acc;
+  }, {});
 
   return (
     <div className="d-flex flex-column min-vh-100">
-
       <Navigation 
         loggedIn={props.loggedIn} 
         user={props.user} 
-        logout={props.logout}
+        logout={props.logout} 
       />
 
       <div className="container my-5 flex-grow-1">
-        <h1>Classifica</h1>
-
-        <div className="table-responsive">
-          <table className="table table-striped mt-3 align-middle text-center">
-            <thead>
-              <tr>
-                <th>Pos</th><th>Squadra</th><th>Pt</th><th>G</th><th>V</th><th>N</th><th>P</th><th>GF</th><th>GS</th><th>DR</th>
-              </tr>
-            </thead>
-            <tbody>
-              {ranking.map(team => (
-                <tr key={team.team}>
-                  <td>{team.position}</td>
-                  <td className="d-flex align-items-center">
-                    <img 
-                        src={`/logo/teams/${teamLogos[team.team_id]}`} 
-                        alt={team.team} 
-                        style={{ width: "30px", height: "30px", marginLeft: "8px" }}
-                        onError={(e) => { e.target.src = '/logo/teams/default.png'; }}
-                      />
-                    <span>{team.team}</span>
-                  </td>
-                  <td>{team.pt}</td>
-                  <td>{team.played}</td>
-                  <td>{team.wins}</td>
-                  <td>{team.draws}</td>
-                  <td>{team.losses}</td>
-                  <td>{team.gf}</td>
-                  <td>{team.gs}</td>
-                  <td>{team.dr}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="d-flex align-items-center justify-content-between mb-4">
+          <h1>Classifica</h1>
+          <select
+            value={selectedLeague ?? ""}
+            onChange={(e) => setSelectedLeague(Number(e.target.value))}
+            style={{
+              color: "#ffffff",
+              backgroundColor: "#000000",
+              padding: "6px 12px",
+              borderRadius: "2px",
+              fontWeight: 700,
+              border: "none",
+              outline: "none",
+              cursor: "pointer"
+            }}
+          >
+            {availableLeagues.map(id => (
+              <option key={id} value={id}>
+                {leagueNames[id]} {/* optionally replace with human-readable name */}
+              </option>
+            ))}
+          </select>
         </div>
 
+        {Object.keys(rankingByGroup).sort().map(group => (
+          <div key={group} className="mb-5">
+            <h2 className="mb-3">Girone {group}</h2>
+            <div className="table-responsive">
+              <table className="table table-striped align-middle text-center">
+                <thead>
+                  <tr>
+                    <th>Pos</th><th>Squadra</th><th>Pt</th><th>G</th><th>V</th><th>N</th><th>P</th><th>GF</th><th>GS</th><th>DR</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rankingByGroup[group].map(team => (
+                    <tr key={`${team.league}-${team.team_id}`}>
+                      <td>{team.position}</td>
+                      <td className="d-flex align-items-center">
+                        <img
+                          src={`/logo/teams/${selectedLeague}/${team.team}.png`} 
+                          // alt={team.team}
+                          style={{ width: "30px", height: "30px", marginLeft: "8px" }}
+                          onError={(e) => { e.target.src = '/logo/teams/default.png'; }}
+                        />
+                        <span>{team.team}</span>
+                      </td>
+                      <td>{team.pt}</td>
+                      <td>{team.played}</td>
+                      <td>{team.wins}</td>
+                      <td>{team.draws}</td>
+                      <td>{team.losses}</td>
+                      <td>{team.gf}</td>
+                      <td>{team.gs}</td>
+                      <td>{team.dr}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ))}
       </div>
 
       <Footer />
     </div>
   );
 }
+
+
 
 function MissionLayout(props) {
   return (

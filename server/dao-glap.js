@@ -84,8 +84,10 @@ exports.listMatches = () => {
 
 const convertRankingFromDbRecord = (dbRecord) => ({
     position: dbRecord.position,
-    team_id: dbRecord.id_team,
+    team_id: dbRecord.tid, 
     team: dbRecord.team,
+    league: dbRecord.league, 
+    group: dbRecord.group,   
     pt: dbRecord.pt,
     played: dbRecord.played,
     wins: dbRecord.wins,
@@ -101,54 +103,70 @@ exports.getRanking = () => {
         const sql = `
             WITH stats AS (
                 SELECT
-                    t.id_team,
+                    t.tid,
                     t.name AS team,
+                    m.league,
+                    m."group",
                     SUM(
                         CASE 
-                            WHEN m.winner != 0 AND m.penalties = 0 AND t.id_team = m.winner THEN 3
-                            WHEN m.winner != 0 AND m.penalties = 1 AND t.id_team = m.winner THEN 2
-                            WHEN m.winner != 0 AND m.penalties = 1 AND t.id_team != m.winner THEN 1
+                            WHEN m.winner != 0 AND m.penalties = 0 AND t.tid = m.winner THEN 3
+                            WHEN m.winner != 0 AND m.penalties = 1 AND t.tid = m.winner THEN 2
+                            WHEN m.winner != 0 AND m.penalties = 1 AND t.tid != m.winner THEN 1
                             ELSE 0
                         END
                     ) AS pt,
                     COUNT(CASE WHEN m.winner != 0 THEN 1 END) AS played,
-                    SUM(CASE 
-                            WHEN m.winner != 0 AND m.penalties = 0 AND t.id_team = m.winner THEN 1
-                            WHEN m.winner != 0 AND m.penalties = 1 AND t.id_team = m.winner THEN 1
+                    SUM(
+                        CASE 
+                            WHEN m.winner != 0 AND m.penalties = 0 AND t.tid = m.winner THEN 1
+                            WHEN m.winner != 0 AND m.penalties = 1 AND t.tid = m.winner THEN 1
                             ELSE 0
                         END
                     ) AS wins,
-                    SUM(CASE 
-                            WHEN m.winner != 0 AND m.penalties = 1 AND t.id_team != m.winner THEN 1
+                    SUM(
+                        CASE 
+                            WHEN m.winner != 0 AND m.penalties = 1 AND t.tid != m.winner THEN 1
                             ELSE 0
                         END
                     ) AS draws_or_pen_losses,
-                    SUM(CASE 
-                            WHEN m.winner != 0 AND m.penalties = 0 AND t.id_team != m.winner THEN 1
+                    SUM(
+                        CASE 
+                            WHEN m.winner != 0 AND m.penalties = 0 AND t.tid != m.winner THEN 1
                             ELSE 0
                         END
                     ) AS losses,
                     SUM(
-                        CASE WHEN m.team_home = t.id_team THEN m.goals_home
-                            WHEN m.team_away = t.id_team THEN m.goals_away
+                        CASE WHEN m.team_home = t.tid THEN m.goals_home
+                            WHEN m.team_away = t.tid THEN m.goals_away
                             ELSE 0
                         END
                     ) AS gf,
                     SUM(
-                        CASE WHEN m.team_home = t.id_team THEN m.goals_away
-                            WHEN m.team_away = t.id_team THEN m.goals_home
+                        CASE WHEN m.team_home = t.tid THEN m.goals_away
+                            WHEN m.team_away = t.tid THEN m.goals_home
                             ELSE 0
                         END
                     ) AS gs
                 FROM team t
-                LEFT JOIN matches m ON t.id_team = m.team_home OR t.id_team = m.team_away
-                GROUP BY t.id_team
+                INNER JOIN matches m ON t.tid = m.team_home OR t.tid = m.team_away
+                GROUP BY t.tid, m.league, m."group"
             )
             SELECT 
-                ROW_NUMBER() OVER (ORDER BY pt DESC, (gf - gs) DESC) AS position,
-                team, id_team, pt, played, wins, draws_or_pen_losses AS draws, losses, gf, gs, (gf - gs) AS dr
+                ROW_NUMBER() OVER (PARTITION BY league, "group" ORDER BY pt DESC, (gf - gs) DESC, gf DESC) AS position,
+                league,
+                "group",
+                team, 
+                tid, 
+                pt, 
+                played, 
+                wins, 
+                draws_or_pen_losses AS draws, 
+                losses, 
+                gf, 
+                gs, 
+                (gf - gs) AS dr
             FROM stats
-            ORDER BY position;
+            ORDER BY league, "group", position;
         `;
 
         db.all(sql, [], (err, rows) => {
