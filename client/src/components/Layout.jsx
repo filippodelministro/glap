@@ -34,8 +34,10 @@ function LoginLayout(props) {
 function HomeLayout(props) {
   const [matches, setMatches] = useState([]);
   const [error, setError] = useState(null);
-  const [selectedLeague, setSelectedLeague] = useState(null);
-  const availableLeagues = [...new Set(matches.map(m => m.league))];
+  // const [selectedLeague, setSelectedLeague] = useState(null);
+  const lastLeague = matches.length ? Math.max(...matches.map(m => m.league)) : null;
+  const [selectedLeague, setSelectedLeague] = useState(lastLeague);
+  const availableLeagues = [...new Set(matches.map(m => m.league))].sort((a,b)=>a-b);
 
   useEffect(() => {
     API.getMatches()
@@ -72,138 +74,151 @@ const matchesByRound = filteredMatches.reduce((acc, m) => {
   return acc;
 }, {});
 
+const matchesByGroup = filteredMatches.reduce((acc, match) => {
+  const group = match.group;
+  const round = match.round;
+
+  if (!acc[group]) acc[group] = {};
+  if (!acc[group][round]) acc[group][round] = [];
+
+  acc[group][round].push(match);
+  return acc;
+}, {});
+
 const filteredGroupName = filteredMatches[0]?.group;
 const filteredLeagueID = filteredMatches[0]?.league;
 
-  return (
-    <div className="d-flex flex-column min-vh-100">
+return (
+  <div className="d-flex flex-column min-vh-100">
 
-      <Navigation 
-        loggedIn={props.loggedIn} 
-        user={props.user} 
-        logout={props.logout}
-      />
+    <Navigation 
+      loggedIn={props.loggedIn} 
+      user={props.user} 
+      logout={props.logout}
+    />
 
-      <div className="container my-5 flex-grow-1">
+    <div className="container my-5 flex-grow-1">
 
+      <h1>Partite</h1>
 
-        <h1>Partite - Girone {filteredGroupName}; league: {filteredLeagueID}</h1>
+      <div className="mb-4">
+        <label className="me-2"><strong>Filtra per lega:</strong></label>
+        <select
+          value={selectedLeague ?? ""}
+          onChange={(e) => setSelectedLeague(Number(e.target.value))}
+        >
+          {availableLeagues.map(id => (
+            <option key={id} value={id}>
+              {leagueNames[id]}
+            </option>
+          ))}
+        </select>
+      </div>
 
-        <div className="mb-4">
-  <label className="me-2"><strong>Filtra per lega:</strong></label>
-  <select
-    value={selectedLeague ?? ""}
-    onChange={(e) => setSelectedLeague(e.target.value || null)}
-  >
-    <option value="">Tutte le leghe</option>
+      {Object.keys(matchesByGroup)
+        .sort()
+        .map(group => (
+          <div key={group} className="mt-5">
 
-    {Object.keys(leagueNames).map(id => (
-      <option key={id} value={id}>
-        {leagueNames[id]}
-      </option>
-    ))}
-  </select>
-</div>
+            <h2 className="mb-4">Girone {group}</h2>
 
-        {Object.keys(matchesByRound)
-          .sort((a, b) => a - b)
-          .map(round => (
-            <div key={round} className="mt-4">
+            {Object.keys(matchesByGroup[group])
+              .sort((a, b) => a - b)
+              .map(round => (
+                <div key={round} className="mt-4">
+                  <h4 className="mb-3">Giornata {round}</h4>
 
-              {/* TITLE */}
-              <h4 className="mb-3">Giornata {round}</h4>
+                  {matchesByGroup[group][round].map(match => (
+                    <div 
+                      key={match.id} 
+                      className="p-3 mb-3 border rounded d-flex align-items-center justify-content-between"
+                      style={{ width: "100%", backgroundColor: "#fff" }}
+                    >
 
-              {matchesByRound[round].map(match => (
-                <div 
-                  key={match.id} 
-                  className="p-3 mb-3 border rounded d-flex align-items-center justify-content-between"
-                  style={{ width: "100%", backgroundColor: "#fff" }}
-                >
-
-                  {/* LEFT: DATE */}
-                  <div style={{ width: "20%" }}>
-                    <div style={{ fontSize: "0.8rem", fontWeight: 600, color: "#666" }}>
-                      Giornata {round}
-                    </div>
-                    <div style={{ fontSize: "0.85rem", color: "#555" }}>
-                      {match.date} – {match.time}
-                    </div>
-                  </div>
-
-                  {/* CENTRAL: MATCH INFO */}
-                  <div className="d-flex align-items-center justify-content-center" style={{ width: "60%" }}>
-
-                    {/* HOME TEAM */}
-                    <div className="d-flex justify-content-end align-items-center" style={{ flex: 1 }}>
-                      <div style={{ textAlign: "right" }}>
-                        <strong>{match.team_home}</strong>
-                        {match.penalties === 1 && match.winner === match.team_home_id && (
-                          <div style={{ fontSize: "0.7rem", color: "#333" }}>Vittoria DCR</div>
-                        )}
+                      {/* LEFT: DATE */}
+                      <div style={{ width: "20%" }}>
+                        <div style={{ fontSize: "0.8rem", fontWeight: 600, color: "#666" }}>
+                          Giornata {round}
+                        </div>
+                        <div style={{ fontSize: "0.85rem", color: "#555" }}>
+                          {match.date} – {match.time}
+                        </div>
                       </div>
-                      <img 
-                        src={`/logo/teams/${leagueID}/${match.team_home}.png`} 
-                        // alt={match.team_home} 
-                        style={{ width: "30px", height: "30px", marginLeft: "8px" }}
-                        onError={(e) => { e.target.src = '/logo/teams/default.png'; }}
-                      />
 
-                    </div>
+                      {/* CENTRAL: MATCH INFO */}
+                      <div className="d-flex align-items-center justify-content-center" style={{ width: "60%" }}>
 
-                    {/* CENTER: SCORE OR VS */}
-                    <div style={{ flex: 1, textAlign: "center" }}>
-                      {match.winner !== 0 ? (
-                        <span 
-                          style={{
-                            color: "#ffffff",
-                            backgroundColor: "#000000",
-                            padding: "6px 12px",
-                            borderRadius: "2px",
-                            fontWeight: 700
-                          }}
-                        >
-                          {match.goals_home ?? "-"} - {match.goals_away ?? "-"}
-                        </span>
-                      ) : (
-                        <span 
-                          style={{
-                            padding: "6px 12px",
-                            fontWeight: 700
-                          }}
-                        >
-                          vs
-                        </span>
-                      )}
-                    </div>
+                        {/* HOME TEAM */}
+                        <div className="d-flex justify-content-end align-items-center" style={{ flex: 1 }}>
+                          <div style={{ textAlign: "right" }}>
+                            <strong>{match.team_home}</strong>
+                            {match.penalties === 1 && match.winner === match.team_home_id && (
+                              <div style={{ fontSize: "0.7rem", color: "#333" }}>Vittoria DCR</div>
+                            )}
+                          </div>
+                          <img 
+                            src={`/logo/teams/${filteredLeagueID}/${match.team_home}.png`} 
+                            style={{ width: "30px", height: "30px", marginLeft: "8px" }}
+                            onError={(e) => { e.target.src = '/logo/teams/default.png'; }}
+                          />
+                        </div>
 
-                    {/* AWAY TEAM */}
-                    <div className="d-flex justify-content-start align-items-center" style={{ flex: 1 }}>
-                      <img 
-                        src={`/logo/teams/${leagueID}/${match.team_away}.png`} 
-                        // alt={match.team_away} 
-                        style={{ width: "30px", height: "30px", marginRight: "8px" }}
-                        onError={(e) => { e.target.src = '/logo/teams/default.png'; }}
-                      />
-                      <div style={{ textAlign: "left" }}>
-                        <strong>{match.team_away}</strong>
-                        {match.penalties === 1 && match.winner === match.team_away_id && (
-                          <div style={{ fontSize: "0.7rem", color: "#333" }}>Vittoria DCR</div>
-                        )}
+                        {/* CENTER: SCORE OR VS */}
+                        <div style={{ flex: 1, textAlign: "center" }}>
+                          {match.winner !== 0 ? (
+                            <span 
+                              style={{
+                                color: "#ffffff",
+                                backgroundColor: "#000000",
+                                padding: "6px 12px",
+                                borderRadius: "2px",
+                                fontWeight: 700
+                              }}
+                            >
+                              {match.goals_home ?? "-"} - {match.goals_away ?? "-"}
+                            </span>
+                          ) : (
+                            <span 
+                              style={{
+                                padding: "6px 12px",
+                                fontWeight: 700
+                              }}
+                            >
+                              vs
+                            </span>
+                          )}
+                        </div>
+
+                        {/* AWAY TEAM */}
+                        <div className="d-flex justify-content-start align-items-center" style={{ flex: 1 }}>
+                          <img 
+                            src={`/logo/teams/${filteredLeagueID}/${match.team_away}.png`} 
+                            style={{ width: "30px", height: "30px", marginRight: "8px" }}
+                            onError={(e) => { e.target.src = '/logo/teams/default.png'; }}
+                          />
+                          <div style={{ textAlign: "left" }}>
+                            <strong>{match.team_away}</strong>
+                            {match.penalties === 1 && match.winner === match.team_away_id && (
+                              <div style={{ fontSize: "0.7rem", color: "#333" }}>Vittoria DCR</div>
+                            )}
+                          </div>
+                        </div>
+
                       </div>
                     </div>
-
-                  </div>
+                  ))}
 
                 </div>
               ))}
-            </div>
+          </div>
         ))}
 
-      </div>
-
-      <Footer />
     </div>
-  );
+
+    <Footer />
+
+  </div>
+);
 }
 
 
