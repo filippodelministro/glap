@@ -22,7 +22,7 @@ const Footer = () => {
       <div className="d-flex justify-content-center flex-wrap gap-4 mb-4 px-3">
         {sponsors.map(s => (
           <a key={s.id} href={s.href} target="_blank" rel="noopener noreferrer">
-            <img src={s.src} height={40} />
+            <img src={s.src} height={60} />
           </a>
         ))}
       </div>
