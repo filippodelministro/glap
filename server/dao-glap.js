@@ -8,27 +8,42 @@ const dayjs = require("dayjs");
 
 const convertTeamFromDbRecord = (dbRecord) => {
   const team = {};
-  team.id = dbRecord.id_team;
+  team.team_name = dbRecord.team_name;
+  team.pid = dbRecord.pid;
   team.name = dbRecord.name;
+  team.surname = dbRecord.surname;
+  team.nickname = dbRecord.nickname;
+  team.birthdate = dbRecord.birthdate;
+  team.foot = dbRecord.foot;
+  team.number = dbRecord.number;
+  team.role = dbRecord.role;
 
   return team;
 }
-
-
-exports.listTeams = () => {
+exports.listTeams = (teamName) => {
     return new Promise((resolve, reject) => {
-        const sql = 'SELECT * FROM team';
-        db.all(sql, [], (err, rows) => {
+        const sql = `
+        select t.name as team_name, p.*
+        from team t
+        inner join sign s on t.tid = s.tid
+        inner join player p on s.pid = p.pid
+        where t.lid = (
+            select max(lid)
+            from league
+        )
+        and t.name = ?`;
+
+        db.all(sql, [teamName], (err, rows) => {
             if (err) {
                 reject(err);
             } else {
                 const teams = rows.map(convertTeamFromDbRecord);
-                // console.log(teams);
                 resolve(teams);
             }
         });
     });
 };
+
 
 const convertMatchFromDbRecord = (dbRecord) => {
     return {
@@ -48,8 +63,6 @@ const convertMatchFromDbRecord = (dbRecord) => {
         penalties: dbRecord.penalties
     };
 };
-
-// MATCHES STRUCTURE(league, `group`, round, date, time, team_home, team_away, goals_home, goals_away, winner, penalties)
 exports.listMatches = () => {
     return new Promise((resolve, reject) => {
         const sql = `
@@ -97,7 +110,6 @@ const convertRankingFromDbRecord = (dbRecord) => ({
     gs: dbRecord.gs,
     dr: dbRecord.dr
 });
-
 exports.getRanking = () => {
     return new Promise((resolve, reject) => {
         const sql = `

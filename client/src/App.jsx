@@ -125,7 +125,7 @@ return (
         element={loggedIn ? <TeamsLayout /> : <Navigate replace to="/login" />}
       /> */}
       <Route
-        path="team/Arancini"
+        path="team/:team_name"
         element={loggedIn ? <TeamsLayout /> : <Navigate replace to="/login" />}
       />
 

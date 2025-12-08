@@ -96,9 +96,11 @@ const errorFormatter = ({ location, msg, param, value, nestedErrors }) => {
 
 /*** GLAP APIs ***/
 
-// GET /api/teams
-app.get('/api/teams', isLoggedIn, (req, res) => {
-  glapDao.listTeams()
+// GET /api/teams/:teamName
+app.get('/api/teams/:teamName', isLoggedIn, (req, res) => {
+  const teamName = req.params.teamName;
+
+  glapDao.listTeams(teamName)
     .then((teams) => res.json(teams))
     .catch((err) => res.status(500).json({ error: 'Errore nel recupero delle squadre' }));
 });

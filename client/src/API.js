@@ -33,17 +33,24 @@ function getJson(httpResponsePromise) {
   });
 }
 
-
-const getTeams = async () => {
-  return getJson(
-    fetch(SERVER_URL + 'teams', { credentials: 'include' })
-  ).then(json => {
-    // json è già un array di oggetti {id, name}, quindi possiamo restituirlo così com'è
-    return json.map(team => ({
-      id: team.id,
-      name: team.name
-    }));
-  });
+const getTeams = async (teamName) => {
+  const response = await fetch(SERVER_URL+`teams/${teamName}`, { credentials: 'include' });
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Server error: ${response.status} ${text}`);
+  }
+  const json = await response.json();
+  return json.map(dbRecord => ({
+    pid: dbRecord.pid,
+    team_name: dbRecord.team_name,
+    name: dbRecord.name,
+    surname: dbRecord.surname,
+    nickname: dbRecord.nickname,
+    birthdate: dbRecord.birthdate,
+    foot: dbRecord.foot,
+    number: dbRecord.number,
+    role: dbRecord.role
+  }));
 };
 
 const getMatches = async () => {

@@ -2,7 +2,7 @@
 import { Row, Col, Button, Alert, Toast, Table } from 'react-bootstrap';
 import { Outlet, Link, useParams, Navigate, useLocation } from 'react-router-dom';
 
-import { Navigation } from './Navigation';
+import { Navigation, NavigationTeam } from './Navigation';
 import { useState, useEffect } from 'react';
 import { LoginForm } from './Auth';
 import { Footer } from './Footer.jsx';
@@ -351,26 +351,27 @@ function StandingsLayout(props) {
 }
 
 function TeamsLayout(props) {
+  const { team_name } = useParams();
   const [teams, setTeams] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-  API.getTeams()
-    .then(data => {
-      console.log(data);   
-      setTeams(data);
-    })
-    .catch(err => setError(err.error || 'Errore nel recupero delle squadre'));
-}, []);
+    API.getTeams(team_name)
+      .then(data => setTeams(data))
+      .catch(err => setError(err.error || 'Errore nel recupero delle squadre'));
+  }, [team_name]); 
+
 
   if (error) {
     return <Alert variant="danger">{error}</Alert>;
   }
 
+  const teamName = teams[0]?.team_name ?? '';
+
   return (
     <div className="d-flex flex-column min-vh-100">
 
-      <Navigation 
+      <NavigationTeam 
         loggedIn={props.loggedIn} 
         user={props.user} 
         logout={props.logout}
@@ -380,24 +381,34 @@ function TeamsLayout(props) {
 
         <Row className="g-4">
           <div>
-        <h1>Squadre</h1>
-        <Table striped bordered hover responsive>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nome squadra</th>
-            </tr>
-          </thead>
-          <tbody>
-            {teams.map(team => (
-              <tr key={team.id}>
-                <td>{team.id}</td>
-                <td>{team.name}</td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-        </div>
+            <h1>{teamName}</h1>
+            <Table striped bordered hover responsive>
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Cognome</th>
+                  <th>Nickname</th>
+                  <th>Data Nascita</th>
+                  <th>Numero preferito</th>
+                  <th>Piede preferito</th>
+                  <th>Ruolo</th>
+                </tr>
+              </thead>
+              <tbody>
+                {teams.map(team => (
+                  <tr key={team.pid}>
+                    <td>{team.name}</td>
+                    <td>{team.surname}</td>
+                    <td>{team.nickname}</td>
+                    <td>{team.birthdate}</td>
+                    <td>{team.number}</td>
+                    <td>{team.foot}</td>
+                    <td>{team.role}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
         </Row>
       </div>
 
